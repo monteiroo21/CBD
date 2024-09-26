@@ -3,16 +3,17 @@ import redis.clients.jedis.Jedis;
 import java.util.Scanner;
 import java.io.File;
 
-public class AutoComplete {
+public class OrderedAutoComplete {
     public static String USERS = "user"; // Key set for users' name
     public static void main( String[] args ) throws Exception {
         Jedis jedis = new Jedis();
 
-        File file = new File("/home/joao/Desktop/3ºANO/1ºSEMESTRE/CBD/Lab1/4/names.txt");
+        File file = new File("/home/joao/Desktop/3ºANO/1ºSEMESTRE/CBD/Lab1/4/nomes-pt-2021.csv");
         Scanner reader = new Scanner(file);
 
         while(reader.hasNextLine()) {
-            jedis.zadd(USERS, 0, reader.nextLine());
+            String[] data = reader.nextLine().split(";");
+            jedis.zadd(USERS, Double.parseDouble(data[1]), data[0]);
         }
 
         Scanner sc = new Scanner(System.in);
