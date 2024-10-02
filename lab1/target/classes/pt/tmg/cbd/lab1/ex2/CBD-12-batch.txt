@@ -1,0 +1,24 @@
+SET key1 "value1"
+SET key2 "value2"
+SET key3 "value3"
+
+HSET hash1 field1 "value1"
+HSET hash1 field2 "value2"
+
+LPUSH list1 "item1"
+LPUSH list1 "item2"
+LPUSH list1 "item3"
+
+SADD set1 "member1"
+SADD set1 "member2"
+SADD set1 "member3"
+
+ZADD sortedset1 1 "member1"
+ZADD sortedset1 2 "member2"
+ZADD sortedset1 3 "member3"
+
+GET key1
+HGETALL hash1
+LRANGE list1 0 -1
+SMEMBERS set1
+ZRANGE sortedset1 0 -1 WITHSCORES

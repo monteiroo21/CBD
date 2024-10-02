@@ -1,3 +1,0 @@
-ping
-SET key "mm"
-GET key
