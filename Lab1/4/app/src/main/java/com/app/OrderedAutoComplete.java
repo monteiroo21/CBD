@@ -1,5 +1,7 @@
 package com.app;
-import redis.clients.jedis.Jedis; 
+import redis.clients.jedis.Jedis;
+
+import java.util.List;
 import java.util.Scanner;
 import java.io.File;
 
@@ -8,7 +10,7 @@ public class OrderedAutoComplete {
 
     public static void main( String[] args ) throws Exception {
         Jedis jedis = new Jedis();
-        jedis.flushAll();
+        jedis.flushDB();
 
         File file = new File("/home/joao/Desktop/3ºANO/1ºSEMESTRE/CBD/Lab1/4/nomes-pt-2021.csv");
         Scanner reader = new Scanner(file);
@@ -27,9 +29,9 @@ public class OrderedAutoComplete {
                 break;
             }
 
-            for (String str : jedis.zrangeByLex(USERS_SCORE, "[" + name, "(" + name + Character.MAX_VALUE)) {
-                Double score = jedis.zscore(USERS_SCORE, str);
-                System.out.printf("%s (popularity: %.0f)\n", str, score);
+            List<String> res = jedis.zrevrangeByScore(USERS_SCORE, "+inf", "-inf"); 
+            for (String n : res) {
+                if (n.startsWith(name)) System.out.println(n);
             }
         }
 
