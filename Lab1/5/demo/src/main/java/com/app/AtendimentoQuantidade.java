@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 import redis.clients.jedis.Jedis; 
 
-public class Atendimento {
-    private static final int products = 5;
+public class AtendimentoQuantidade {
+    private static final int product_units = 10;
     private static final int timeslot = 30;
 
     public static String REQUESTS = "requests";
@@ -13,14 +13,17 @@ public class Atendimento {
 
     public static Jedis jedis;
 
-    public static void addRequest(String username, String product, Long timestamp) {
-        System.out.println(jedis.zcard(username));
-        if (jedis.zcard(username) >= products) {
+    public static void addRequest(String username, String product, int quantity, Long timestamp) {
+        int num_units = 0;
+        for (String prod : jedis.hkeys(username)) {
+            num_units += Integer.parseInt(jedis.hget(username, prod));
+        }
+        if (num_units + quantity >= product_units) {
             System.out.println("ERROR: User " + username.substring(4) + " has exceeded the maximum number of requests in the current timeslot.");
             System.out.println("You can make the next request in " + jedis.ttl(username) + " seconds.");
             
         } else {
-            jedis.zadd(username, timestamp, product);
+            jedis.hincrBy(username, product, quantity);
             jedis.expire(username, timeslot);
             jedis.hset(TIMESTAMPS, username, String.valueOf(timestamp)); 
             System.out.println("Product '" + product.substring(7) + "' added for user '" + username.substring(4) + "'.");
@@ -35,6 +38,7 @@ public class Atendimento {
         jedis = new Jedis();
         Scanner sc = new Scanner(System.in);
         String username, product;
+        Integer quantity;
         while (true) {
             System.out.print("Enter the username ('Enter' to quit): ");
             username = sc.nextLine();
@@ -48,8 +52,14 @@ public class Atendimento {
             if (product.substring(7).equals("")) {
                 break;
             }
+            System.out.println("Enter the quantity ('Enter' to quit): ");
+            String resp = sc.nextLine();
+            if (resp.equals("")) {
+                break;
+            }
+            quantity = Integer.parseInt(resp);
             Long timestamp = Long.parseLong(getTime());
-            addRequest(username, product, timestamp);
+            addRequest(username, product, quantity, timestamp);
         }
         sc.close();
         jedis.close();
