@@ -2,12 +2,13 @@ package com.app;
 import redis.clients.jedis.Jedis; 
 import java.util.Scanner;
 import java.io.File;
-import java.util.List;
 
 public class OrderedAutoComplete {
-    public static String USERS_SCORE = "userByScore"; // Key set for users' name
+    public static String USERS_SCORE = "userByScore";
+
     public static void main( String[] args ) throws Exception {
         Jedis jedis = new Jedis();
+        jedis.flushAll();
 
         File file = new File("/home/joao/Desktop/3ºANO/1ºSEMESTRE/CBD/Lab1/4/nomes-pt-2021.csv");
         Scanner reader = new Scanner(file);
@@ -26,11 +27,9 @@ public class OrderedAutoComplete {
                 break;
             }
 
-            List<String> names = jedis.zrevrangeByScore(USERS_SCORE, "+inf", "-inf");
-            for (String nameDict : names) {
-                if (nameDict.startsWith(name)) {
-                    System.out.println(nameDict);
-                }
+            for (String str : jedis.zrangeByLex(USERS_SCORE, "[" + name, "(" + name + Character.MAX_VALUE)) {
+                Double score = jedis.zscore(USERS_SCORE, str);
+                System.out.printf("%s (popularity: %.0f)\n", str, score);
             }
         }
 
