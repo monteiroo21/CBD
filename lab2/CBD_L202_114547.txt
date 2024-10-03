@@ -1,0 +1,9 @@
+// NMEC: 114547
+ 
+// 1. Liste todos os documentos da coleção. 
+db.restaurants.find() 
+db.restaurants.find().pretty()
+// 3772 
+ 
+// 2. Apresente os campos restaurant_id, nome, localidade e gastronomia para 
+todos os documentos da coleção 
