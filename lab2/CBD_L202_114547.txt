@@ -50,10 +50,12 @@ db.restaurants.find( { $or: [ { localidade: 'Staten Island' }, { localidade: 'Qu
  
 // 13. Liste o nome, a localidade, o score e gastronomia dos restaurantes que alcançaram 
 sempre pontuações inferiores ou igual a 3. 
-db.restaurants.find( { 'grades.score': { $lte: 3 } } , { _id: 0, nome: 1, localidade: 1, 'grades.score': 1, gastronomia: 1 } )
+db.restaurants.find( { 'grades.score': { $not: { $gt: 3 } } } , { _id: 0, nome: 1, localidade: 1, 'grades.score': 1, gastronomia: 1 } )
 
 // 14. Liste o nome e as avaliações dos restaurantes que obtiveram uma avaliação com 
 um grade "A", um score 10 na data "2014-08-11T00: 00: 00Z" (ISODATE).  
+db.restaurants.find( { 'grades': { $elemMatch: { score: 10, grade: 'A', date: ISODate("2014-08-11T00:00:00Z") } } } )
+
 // 15. Liste o restaurant_id, o nome e os score dos restaurantes nos quais a segunda 
 avaliação foi grade "A" e ocorreu em ISODATE "2014-08-11T00: 00: 00Z". 
 // 16. Liste o restaurant_id, o nome, o endereço (address) dos restaurantes onde o 2º 
