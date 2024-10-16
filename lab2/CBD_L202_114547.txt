@@ -63,17 +63,24 @@ db.restaurants.find( { 'grades.1.grade': 'A' ,  'grades.1.date': ISODate("2014-0
 // 16. Liste o restaurant_id, o nome, o endereço (address) dos restaurantes onde o 2º 
 elemento da matriz de coordenadas (coord) tem um valor superior a 42 e inferior 
 ou igual a 52. 
-db.restaurants.find( { 'address': { $elemMatch: { 'coord.1': { $gt: 42, $lte: 52 } } } } , { _id: 0, restaurant_id: 1, nome: 1, address: 1 } )
-//TODO ^
+db.restaurants.find( { 'address': { 'coord.1': { $gt: 42, $lte: 52 } } } , { _id: 0, restaurant_id: 1, nome: 1, address: 1 } )
 
 // 17. Liste nome, gastronomia e localidade de todos os restaurantes ordenando por ordem 
 crescente da gastronomia e, em segundo, por ordem decrescente de localidade. 
+db.restaurants.find( { } , { _id: 0, nome: 1, gastronomia: 1, localidade: 1 } ).sort({ gastronomia: 1, localidade: -1 })
+
 // 18. Liste nome, localidade, grade e gastronomia de todos os restaurantes localizados em 
 Brooklyn que não incluem gastronomia "American" e obtiveram uma classificação 
 (grade) "A". Deve apresentá-los por ordem decrescente de gastronomia. 
-// 19. Indique o número total de avaliações (numGrades) na coleção.  
+db.restaurants.find( { $and: [ { gastronomia: { $ne: 'American'} }, { 'grades.grade': 'A' } ] } , { _id: 0, nome: 1, localidade: 1, 'grades.grade': 1, gastronomia: 1 } ).sort({ gastronomia: 1, localidade: -1 }).sort({ gastronomia: -1 })
+
+// 19. Indique o número total de avaliações (numGrades) na coleção. 
+db.restaurants.find( { }, { _id: 0, totalGrades: { $size: '$grades' } }  )
+
 // 20. Apresente o nome e número de avaliações (numGrades) dos 3 restaurante com 
 mais avaliações. 
+db.restaurants.find( { },  { _id: 0, numGrades: { $size: '$grades' } } ).limit(3)
+
 // 21. Apresente o número total de avaliações (numGrades) em cada dia da semana. 
 // 22. Conte o total de restaurante existentes em cada localidade. 
 // 23. Indique os restaurantes que têm gastronomia "Portuguese", o somatório de score é 
