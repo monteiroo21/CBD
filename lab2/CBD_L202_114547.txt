@@ -12,7 +12,7 @@ db.restaurants.find( { } , { _id: 0, restaurant_id: 1, nome: 1, localidade: 1, g
 // 3. Apresente os campos restaurant_id, nome, localidade e código postal (zipcode), mas 
 exclua o campo _id de todos os documentos da coleção. 
 db.restaurants.find( { } , { _id: 0, restaurant_id: 1, nome: 1, localidade: 1, address: { zipcode: 1 } } )
-db.restaurants.find( { } , { _id: 0, restaurant_id: 1, nome: 1, localidade: 1, "address.zipcode": 1 } )
+db.restaurants.find( { } , { _id: 0, restaurant_id: 1, nome: 1, localidade: 1, 'address.zipcode': 1 } )
 
 // 4. Indique o total de restaurantes localizados no Bronx. 
 db.restaurants.find( {localidade: "Bronx"} ).count()
@@ -63,7 +63,7 @@ db.restaurants.find( { 'grades.1.grade': 'A' ,  'grades.1.date': ISODate("2014-0
 // 16. Liste o restaurant_id, o nome, o endereço (address) dos restaurantes onde o 2º 
 elemento da matriz de coordenadas (coord) tem um valor superior a 42 e inferior 
 ou igual a 52. 
-db.restaurants.find( { 'address': { 'coord.1': { $gt: 42, $lte: 52 } } } , { _id: 0, restaurant_id: 1, nome: 1, address: 1 } )
+db.restaurants.find( { 'address.coord.1': { $gt: 42, $lte: 52 } } , { _id: 0, restaurant_id: 1, nome: 1, address: 1 } )  
 
 // 17. Liste nome, gastronomia e localidade de todos os restaurantes ordenando por ordem 
 crescente da gastronomia e, em segundo, por ordem decrescente de localidade. 
@@ -72,22 +72,32 @@ db.restaurants.find( { } , { _id: 0, nome: 1, gastronomia: 1, localidade: 1 } ).
 // 18. Liste nome, localidade, grade e gastronomia de todos os restaurantes localizados em 
 Brooklyn que não incluem gastronomia "American" e obtiveram uma classificação 
 (grade) "A". Deve apresentá-los por ordem decrescente de gastronomia. 
-db.restaurants.find( { $and: [ { gastronomia: { $ne: 'American'} }, { 'grades.grade': 'A' } ] } , { _id: 0, nome: 1, localidade: 1, 'grades.grade': 1, gastronomia: 1 } ).sort({ gastronomia: 1, localidade: -1 }).sort({ gastronomia: -1 })
+db.restaurants.find( { $and: [ { localidade: 'Brooklyn' }, { gastronomia: { $ne: 'American'} }, { 'grades.grade': 'A' } ] } , { _id: 0, nome: 1, localidade: 1, 'grades.grade': 1, gastronomia: 1 } ).sort({ gastronomia: -1 })
 
 // 19. Indique o número total de avaliações (numGrades) na coleção. 
-db.restaurants.find( { }, { _id: 0, totalGrades: { $size: '$grades' } }  )
+db.restaurants.aggregate([ { $project: { numGrades: { $size: '$grades' } } }, { $group: { _id: 0, numGrades: { $sum: '$numGrades' } } }, { $project: { _id: 0, numGrades: 1 } }] )
 
 // 20. Apresente o nome e número de avaliações (numGrades) dos 3 restaurante com 
 mais avaliações. 
-db.restaurants.find( { },  { _id: 0, numGrades: { $size: '$grades' } } ).limit(3)
+db.restaurants.aggregate([ { $project: { _id: 0, nome: 1, numGrades: { $size: '$grades' } } }, { $sort: { numGrades: -1 } } , { $limit: 3 }] )
 
 // 21. Apresente o número total de avaliações (numGrades) em cada dia da semana. 
+db.restaurants.aggregate([ { $unwind: '$grades' }, { $project: { dayOfWeek: { $dayOfWeek: '$grades.date' } } }, { $group: { _id: '$dayOfWeek', numGrades: { $sum: 1 } } }, { $project: { _id: 0, dayOfWeek: '$_id', numGrades: 1 } }, { $sort: { dayOfWeek: 1 } }] )
+
 // 22. Conte o total de restaurante existentes em cada localidade. 
+db.restaurants.aggregate([ { $group: { _id: '$localidade', totalRestaurants: { $sum: 1 } } }, { $project: { _id: 0, localidade: '$_id', totalRestaurants: 1 } }] )
+
 // 23. Indique os restaurantes que têm gastronomia "Portuguese", o somatório de score é 
 superior a 50 e estão numa latitude inferior a -60. 
+db.restaurants.aggregate([ { $unwind: '$grades' }, { $match: { gastronomia: 'Portuguese', 'address.coord.0': { $lt: -60 } } }, { $group: { _id: '$restaurant_id', sumScore: { $sum: '$grades.score' }, nome: { $first: '$nome' }, } }, { $match: { sumScore: { $gt: 50 } } }, { $project: { _id:0, restaurant_id: '$_id', nome: 1, sumScore: 1 } }] )
+
 // 24. Apresente o número de gastronomias diferentes na rua "Fifth Avenue" 
+db.restaurants.aggregate([ { $match: { 'address.rua': 'Fifth Avenue' } }, { $group: {_id: '$gastronomia' } }, { $group: { _id: 0, totalGastronomias: { $sum: 1 } } }] )
+
 // 25. Apresente o nome e o score médio (avgScore) e número de avaliações (numGrades) 
 dos restaurantes com score médio superior a 30 desde 1-Jan-2014. 
+db.restaurants.aggregate([ { $unwind: '$grades' }, { $group: { _id: '$restaurant_id', avgScore: { $avg: '$grades.score' }, numGrades: { $sum: 1 } } }, { $match: { $and: [ { "grades.date": { $gte: ISODate("2014-01-01") } }, { "grades.score": { $gt: 30 } } ] } }, { $project: {  _id: 0, nome: 1, avgScore: 1, numGrades: 1 } } ])
+
 // 26. .. 30. Descreva 5 perguntas adicionais à base dados (alíneas 26 a 30), 
 significativamente distintas das anteriores, e apresente igualmente a solução de 
 pesquisa para cada questão. 
