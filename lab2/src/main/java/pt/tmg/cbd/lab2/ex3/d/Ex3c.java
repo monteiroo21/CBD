@@ -1,19 +1,22 @@
 package pt.tmg.cbd.lab2.ex3.d;
 
-import java.nio.file.DirectoryStream.Filter;
+import java.util.Arrays;
 import java.util.Date;
 import java.time.Instant;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 
 public class Ex3c {
     public static void main(String[] args) {
@@ -30,16 +33,7 @@ public class Ex3c {
 
         Bson filter = Filters.elemMatch("grades", Filters.and(Filters.gt("score", 80), Filters.lt("score", 100)));
 
-        MongoCursor<Document> cursor = collection.find(filter).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-                System.out.println();
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(filter).forEach(str -> System.out.println(str.toJson()));
 
 
         // 13. Liste o nome, a localidade, o score e gastronomia dos restaurantes que alcançaram sempre pontuações inferiores ou igual a 3. 
@@ -54,16 +48,7 @@ public class Ex3c {
 
         filter = Filters.not(Filters.elemMatch("grades", Filters.gt("score", 3)));
 
-        cursor = collection.find(filter).projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-                System.out.println();
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(filter).projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         // 14. Liste o nome e as avaliações dos restaurantes que obtiveram uma avaliação com um grade "A", um score 10 na data "2014-08-11T00: 00: 00Z" (ISODATE).
 
@@ -76,17 +61,8 @@ public class Ex3c {
             Projections.excludeId());
     
         filter = Filters.elemMatch("grades", Filters.and(Filters.eq("score", 10), Filters.eq("grade", "A"), Filters.eq("date", Date.from(Instant.parse("2014-08-11T00:00:00Z")))));
-
-        cursor = collection.find(filter).projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-                System.out.println();
-            }
-        } finally {
-            cursor.close();
-        }
+        
+        collection.find(filter).projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         // 17. Liste nome, gastronomia e localidade de todos os restaurantes ordenando por ordem crescente da gastronomia e, em segundo, por ordem decrescente de localidade.
 
@@ -97,25 +73,34 @@ public class Ex3c {
         projectionFields = Projections.fields(
             Projections.include("nome", "gastronomia", "localidade"),
             Projections.excludeId());
-    
-        // TODO:
-        
-        filter = Filters.elemMatch("grades", Filters.and(Filters.eq("score", 10), Filters.eq("grade", "A"), Filters.eq("date", Date.from(Instant.parse("2014-08-11T00:00:00Z")))));
 
-        cursor = collection.find(filter).projection(projectionFields).iterator();
+        Bson sortFields = Sorts.orderBy(
+            Sorts.ascending("gastronomia"),
+            Sorts.descending("localidade"));
 
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-                System.out.println();
-            }
-        } finally {
-            cursor.close();
-        }
+
+        collection.find().sort(sortFields).projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         // 21. Apresente o número total de avaliações (numGrades) em cada dia da semana.
         
         System.out.println("\n------------------- Ex 21 ------------------\n");
+
+        // db.restaurants.aggregate([ { $unwind: '$grades' }, { $project: { dayOfWeek: { $dayOfWeek: '$grades.date' } } }, { $group: { _id: '$dayOfWeek', numGrades: { $sum: 1 } } }, { $project: { _id: 0, dayOfWeek: '$_id', numGrades: 1 } }, { $sort: { dayOfWeek: 1 } }] )
+
+        projectionFields = Projections.fields(
+            Projections.computed("dayOfWeek", new Document("$dayOfWeek", "grades.date")));
+
+        Bson projectionsFields2 = Projections.fields(
+            Projections.include("numGrades"),
+            Projections.computed("dayOfWeek", new Document("$dayOfWeek", "$grades.date")),
+            Projections.excludeId());
+
+        collection.aggregate(Arrays.asList(
+            Aggregates.unwind("$grades"),
+            Aggregates.project(projectionFields),
+            Aggregates.group("$dayOfWeek", Accumulators.sum("numGrades", 1)), 
+            Aggregates.project(projectionsFields2),
+            Aggregates.sort(Sorts.ascending("dayOfWeek")))).forEach(str -> System.out.println(str.toJson()));
 
         mongoClient.close();
     }

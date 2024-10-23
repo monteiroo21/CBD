@@ -64,16 +64,8 @@ public class Ex3a {
         Projections.include("nome", "localidade"),
         Projections.excludeId());
 
-        MongoCursor<Document> cursor = collection.find(new Document("localidade", "Queens"))
-            .projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(new Document("localidade", "Queens"))
+            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
         System.out.println("\n");
 
         Bson filter = new Document("nome", "New Restaurant 1");

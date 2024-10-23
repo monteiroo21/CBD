@@ -26,48 +26,24 @@ public class Ex3b {
         Projections.include("nome", "localidade"),
         Projections.excludeId());
 
-        MongoCursor<Document> cursor = collection.find(new Document("localidade", "Queens"))
-            .projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(new Document("localidade", "Queens"))
+            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         System.out.println("\n---------------- SEARCH GASTRONOMIA --------------------\n");
         projectionFields = Projections.fields(
         Projections.include("nome", "gastronomia"),
         Projections.excludeId());
 
-        cursor = collection.find(new Document("gastronomia", "American"))
-            .projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(new Document("gastronomia", "American"))
+            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         System.out.println("\n---------------- SEARCH NOME --------------------\n");
         projectionFields = Projections.fields(
         Projections.include("nome"),
         Projections.excludeId());
 
-        cursor = collection.find(new Document("nome", "Subway"))
-            .projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(new Document("nome", "Subway"))
+            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         long endTime = System.currentTimeMillis();
 
@@ -85,48 +61,25 @@ public class Ex3b {
         Projections.include("nome", "localidade"),
         Projections.excludeId());
 
-        cursor = collection.find(new Document("localidade", "Queens"))
-            .projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(new Document("localidade", "Queens"))
+            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         System.out.println("\n---------------- SEARCH GASTRONOMIA --------------------\n");
         projectionFields = Projections.fields(
         Projections.include("nome", "gastronomia"),
         Projections.excludeId());
 
-        cursor = collection.find(new Document("gastronomia", "American"))
-            .projection(projectionFields).iterator();
+        collection.find(new Document("gastronomia", "American"))
+            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
 
         System.out.println("\n---------------- SEARCH NOME --------------------\n");
         projectionFields = Projections.fields(
         Projections.include("nome"),
         Projections.excludeId());
 
-        cursor = collection.find(new Document("nome", "Subway"))
-            .projection(projectionFields).iterator();
-
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
+        collection.find(new Document("nome", "Subway"))
+            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
 
         endTime = System.currentTimeMillis();
 
