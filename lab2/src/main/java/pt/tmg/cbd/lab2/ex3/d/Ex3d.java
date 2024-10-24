@@ -51,7 +51,6 @@ public class Ex3d {
 
     public List<String> getRestWithNameCloserTo(String name) {
         List<String> result = new ArrayList<>();
-        // db.restaurants.find( { nome: /^Wil/ } , { _id: 0, restaurant_id: 1, nome: 1, localidade: 1, gastronomia: 1 } )
 
         Bson filter = Filters.regex("nome", name);
         collection.find(filter).projection(Projections.fields(

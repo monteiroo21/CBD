@@ -88,11 +88,11 @@ public class Ex3c {
         // db.restaurants.aggregate([ { $unwind: '$grades' }, { $project: { dayOfWeek: { $dayOfWeek: '$grades.date' } } }, { $group: { _id: '$dayOfWeek', numGrades: { $sum: 1 } } }, { $project: { _id: 0, dayOfWeek: '$_id', numGrades: 1 } }, { $sort: { dayOfWeek: 1 } }] )
 
         projectionFields = Projections.fields(
-            Projections.computed("dayOfWeek", new Document("$dayOfWeek", "grades.date")));
+            Projections.computed("dayOfWeek", new Document("$dayOfWeek", "$grades.date")));
 
         Bson projectionsFields2 = Projections.fields(
             Projections.include("numGrades"),
-            Projections.computed("dayOfWeek", new Document("$dayOfWeek", "$grades.date")),
+            Projections.computed("dayOfWeek", "$_id"),
             Projections.excludeId());
 
         collection.aggregate(Arrays.asList(
