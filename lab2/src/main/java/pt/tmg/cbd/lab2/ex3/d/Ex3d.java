@@ -9,7 +9,6 @@ import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
-import com.mongodb.client.model.Sorts;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -81,5 +80,6 @@ public class Ex3d {
             System.out.println("-> " + name);
         }
 
+        mongoClient.close();
     }
 }

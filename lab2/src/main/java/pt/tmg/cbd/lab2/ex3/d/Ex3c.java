@@ -7,7 +7,6 @@ import java.time.Instant;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
