@@ -9,12 +9,15 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 
@@ -25,7 +28,8 @@ public class Ex4a {
     public static void addRequest(String username, String product, Long timestamp, MongoCollection<Document> collection) {
         Bson filter = Filters.eq("user", username);
         Document userDoc = collection.find(filter).first();
-        Boolean canAdd = true;
+        long currentTime = getTime(); // Ensure getTime() returns System.currentTimeMillis()
+        long timeslotMillis = timeslot * 1000; 
         if (userDoc == null) {
             collection.insertOne(new Document("_id", new ObjectId())
                                         .append("user", username)
@@ -33,62 +37,60 @@ public class Ex4a {
                                                                                 .append("timestamp", timestamp))));
             System.out.println("Product '" + product + "' added for user '" + username + "'.");
         } else {
-            if (canAdd) {
-                collection.updateOne(filter, Updates.push("requests", new Document("product", product)
-                        .append("timestamp", timestamp)));
-                System.out.println("Product '" + product + "' added for user '" + username + "'.");
-            }
-            if (((getTime() - getFirstTime(collection, filter)) / 1000) >= timeslot) {
-                collection.updateOne(filter, Updates.pullByFilter(Filters.eq("requests.timestamp", getFirstTime(collection, filter))));
-                canAdd = true;
-            }
+            // Calculate the threshold timestamp; requests older than this will be removed
+            long threshold = currentTime - timeslotMillis;
+            
+            // Remove requests that are older than the timeslot
+            Bson pullFilter = Filters.lt("timestamp", threshold);
+            collection.updateOne(filter, Updates.pull("requests", pullFilter));
+            
+            // Fetch the updated user document
+            userDoc = collection.find(filter).first();
             List<Document> requests = userDoc.getList("requests", Document.class);
-            System.out.println(requests.size());
-            if (!canAdd || requests.size() >= products) {
-                canAdd = false;
-                Long oldTimeStamp = getFirstTime(collection, filter);
-                System.out.println("ERROR: User " + username + " has exceeded the maximum number of requests in the current timeslot.");
-                System.out.println("You can make the next request in " + (timeslot-((getTime() - oldTimeStamp) / 1000)) + " seconds.");
-            } 
+            int currentRequestCount = (requests != null) ? requests.size() : 0;
+            
+            if (currentRequestCount < products) {
+                // User has not exceeded the maximum number of requests; add the new request
+                collection.updateOne(filter, Updates.push("requests", new Document("product", product)
+                                            .append("timestamp", timestamp)));
+                System.out.println("Product '" + product + "' added for user '" + username + "'.");
+            } else {
+                // User has reached the maximum number of requests; calculate wait time
+                // Find the oldest request timestamp
+                Long oldestTimestamp = getFirstTime(collection, filter);
+                if (oldestTimestamp != null) {
+                    long waitTimeMillis = (oldestTimestamp + timeslotMillis) - currentTime;
+                    long waitTimeSeconds = (waitTimeMillis > 0) ? waitTimeMillis / 1000 : 0;
+                    System.out.println("ERROR: User " + username + " has exceeded the maximum number of requests in the current timeslot.");
+                    System.out.println("You can make the next request in " + waitTimeSeconds + " seconds.");
+                } else {
+                    // This case should not occur if the schema is consistent, but handle it gracefully
+                    System.out.println("ERROR: Unable to determine the next available request time for user '" + username + "'.");
+                }
+            }
         }
     }
 
     public static Long getFirstTime(MongoCollection<Document> collection, Bson filter) {
-        Document userDoc = collection.find(filter).first();
-    
-        if (userDoc == null) {
-            System.err.println("User document not found for the given filter.");
-            return null; // Or throw an exception based on your application's logic
-        }
-        
-        // Extract the 'requests' array from the user document
-        List<Document> requests = userDoc.getList("requests", Document.class);
-        
-        if (requests == null || requests.isEmpty()) {
-            System.err.println("No requests found for the user.");
-            return null; // Or handle as per your logic
-        }
-        
-        // Sort the 'requests' array by 'timestamp' in ascending order
-        requests.sort(Comparator.comparingLong(doc -> {
-            Long ts = doc.getLong("timestamp");
-            if (ts == null) {
-                System.err.println("Encountered a request without a 'timestamp'.");
-                return Long.MAX_VALUE; // Push invalid timestamps to the end
+        List<Bson> pipeline = Arrays.asList(
+            Aggregates.match(filter),
+            Aggregates.unwind("$requests"),
+            Aggregates.sort(Sorts.ascending("requests.timestamp")),
+            Aggregates.limit(1),
+            Aggregates.project(Projections.fields(Projections.excludeId(), Projections.include("requests.timestamp")))
+        );
+
+        AggregateIterable<Document> result = collection.aggregate(pipeline);
+        Document firstDocument = result.first();
+
+        if (firstDocument != null) {
+            Document requests = (Document) firstDocument.get("requests");
+            if (requests != null) {
+                return requests.getLong("timestamp");
             }
-            return ts;
-        }));
-        
-        // Retrieve the first request's timestamp
-        Document firstRequest = requests.get(0);
-        Long firstTimestamp = firstRequest.getLong("timestamp");
-        
-        if (firstTimestamp == null) {
-            System.err.println("The first request does not contain a 'timestamp'.");
-            return null; // Or handle as needed
         }
-        
-        return firstTimestamp;
+
+        return null;
     }
 
     public static Long getTime() {
