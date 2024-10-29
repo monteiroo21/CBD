@@ -2540,8 +2540,43 @@ db.ex4b.aggregate([
     { $project: { _id: 0, nome: "$_id" } }
 ])
 
-// 28. Calcule a média dos scores por localidade e liste as localidades com média de score superior a 80.
-db.restaurants.aggregate([ { $unwind: '$grades' }, { $group: { _id: '$localidade' , avgScore: { $avg: '$grades.score' } } }, { $match: { avgScore: { $gt: 80 } } }, { $project: { _id: 0, localidade: '$_id', avgScore: 1 } }])
+// 28. Liste para cada gastronomia o número de restaurantes na localidade Bronx, em ordem decrescente de número de restaurantes
+db.restaurants.aggregate([ { $match: { localidade: "Bronx" } }, { $group: { _id: "$gastronomia", numRestaurants: { $sum: 1 } } }, { $sort: { numRestaurants: -1 } } ])
+// [
+//   { _id: 'American', numRestaurants: 75 },
+//   { _id: 'Hamburgers', numRestaurants: 41 },
+//   { _id: 'Pizza', numRestaurants: 35 },
+//   {
+//     _id: 'Latin (Cuban, Dominican, Puerto Rican, South & Central American)',
+//     numRestaurants: 21
+//   },
+//   { _id: 'Bakery', numRestaurants: 20 },
+//   { _id: 'Chinese', numRestaurants: 16 },
+//   { _id: 'Italian', numRestaurants: 14 },
+//   { _id: 'Caribbean', numRestaurants: 12 },
+//   { _id: 'Seafood', numRestaurants: 9 },
+//   { _id: 'Pizza/Italian', numRestaurants: 8 },
+//   { _id: 'Chicken', numRestaurants: 7 },
+//   { _id: 'Café/Coffee/Tea', numRestaurants: 7 },
+//   { _id: 'Mexican', numRestaurants: 6 },
+//   { _id: 'Irish', numRestaurants: 6 },
+//   { _id: 'Ice Cream, Gelato, Yogurt, Ices', numRestaurants: 4 },
+//   { _id: 'Delicatessen', numRestaurants: 4 },
+//   { _id: 'Juice, Smoothies, Fruit Salads', numRestaurants: 2 },
+//   { _id: 'Sandwiches', numRestaurants: 2 },
+//   { _id: 'Steak', numRestaurants: 2 },
+//   { _id: 'Pancakes/Waffles', numRestaurants: 2 },
+//   { _id: 'Spanish', numRestaurants: 2 },
+//   { _id: 'Donuts', numRestaurants: 2 },
+//   { _id: 'Bagels/Pretzels', numRestaurants: 2 },
+//   { _id: 'African', numRestaurants: 2 },
+//   { _id: 'Chinese/Cuban', numRestaurants: 2 },
+//   { _id: 'Soul Food', numRestaurants: 2 },
+//   { _id: 'Not Listed/Not Applicable', numRestaurants: 1 },
+//   { _id: 'Other', numRestaurants: 1 },
+//   { _id: 'Barbecue', numRestaurants: 1 },
+//   { _id: 'Greek', numRestaurants: 1 }
+// ]
 
 
 // 29. Encontre os restaurantes com gastronomia "Delicatessen" ou "American", estão localizados em "Brooklyn" ou "Queens", e possuem pelo menos uma avaliação com score acima de 50.
@@ -2618,26 +2653,28 @@ db.restaurants.find({ $and: [{ $or: [{ gastronomia: 'Delicatessen' }, { gastrono
 
 // 30. Liste os restaurantes que receberam mais de 5 avaliações e que possuem pelo menos uma avaliação com score de 90.
 db.restaurants.aggregate([
-    { $unwind: "$grades" },
-    {
-        $group: {
-            _id: "$_id",
-            nome: { $first: "$nome" },
-            count: { $sum: 1 },
-            hasPerfectScore: { $max: { $cond: [ { $eq: ["$requests.score", 90] }, 1, 0 ] } }
-        }
-    },
-    {
-        $match: {
-            count: { $gt: 5 },
-            hasPerfectScore: 1
-        }
-    },
-    {
-        $project: {
-            _id: 0,
-            nome: 1,
-            count: 1
-        }
+  {
+    $match: {
+      "grades.score": 90
     }
+  },
+  {
+    $addFields: {
+      totalGrades: { $size: "$grades" }
+    }
+  },
+  {
+    $match: {
+      totalGrades: { $gt: 5 }
+    }
+  },
+  {
+    $project: {
+      nome: 1,
+      localidade: 1,
+      gastronomia: 1,
+      totalGrades: 1,
+      grades: 1
+    }
+  }
 ])
