@@ -2509,8 +2509,41 @@ db.restaurants.aggregate([ { $match: { 'address.rua': 'Fifth Avenue' } }, { $gro
 
 // 25. Apresente o nome e o score médio (avgScore) e número de avaliações (numGrades) 
 dos restaurantes com score médio superior a 30 desde 1-Jan-2014. 
-db.restaurants.aggregate([ { $unwind: '$grades' }, { $match: { "grades.date": { $gte: ISODate("2014-01-01") } } }, { $group: { _id: '$restaurant_id', avgScore: { $avg: '$grades.score' }, numGrades: { $sum: 1 } } }, { $match: { $and: [ { "grades.date { "grades.score": { $gt: 30 } } ] } }, { $project: {  _id: 0, nome: 1, avgScore: 1, numGrades: 1 } } ])
-// correct !!!
+db.restaurants.aggregate([ { $unwind: '$grades' }, { $match: { "grades.date": { $gte: ISODate("2014-01-01") } } }, { $group: { _id: '$restaurant_id', avgScore: { $avg: '$grades.score' }, numGrades: { $sum: 1 }, nome: { $first: '$nome' } } }, { $match: { avgScore: { $gt: 30 } } }, { $project: {  _id: 0, nome: 1, avgScore: 1, numGrades: 1 } } ])
+// [
+//   { avgScore: 32.666666666666664, numGrades: 3, nome: "Coppola'S" },
+//   { avgScore: 42.5, numGrades: 2, nome: 'Seo Japanese Restaurant' },
+//   { avgScore: 36.5, numGrades: 2, nome: 'Pho Bang Restaurant' },
+//   {
+//     avgScore: 32.5,
+//     numGrades: 2,
+//     nome: 'Miyagi Japanese Home Cooking'
+//   },
+//   { avgScore: 36, numGrades: 1, nome: 'Mesivta Eitz Chaim' },
+//   { avgScore: 33.333333333333336, numGrades: 3, nome: 'Acqua' },
+//   { avgScore: 34.5, numGrades: 2, nome: 'Times Deli & Cafe' },
+//   { avgScore: 35, numGrades: 2, nome: 'Del Corso Pizzeria' },
+//   { avgScore: 47, numGrades: 1, nome: 'Holland Bar' },
+//   { avgScore: 44, numGrades: 1, nome: 'La Palapa' },
+//   { avgScore: 33, numGrades: 2, nome: 'Nueva Villa China Restaurant' },
+//   { avgScore: 50, numGrades: 1, nome: 'Cafe Lalo' },
+//   {
+//     avgScore: 30.333333333333332,
+//     numGrades: 3,
+//     nome: "Michelle'S Cocktail Lounge"
+//   },
+//   { avgScore: 32, numGrades: 2, nome: 'Tequilla Sunrise' },
+//   {
+//     avgScore: 30.5,
+//     numGrades: 2,
+//     nome: 'Good Enough To Eat (A.G. Bistro)'
+//   },
+//   { avgScore: 64.5, numGrades: 2, nome: 'Bella Napoli' },
+//   { avgScore: 34.5, numGrades: 2, nome: 'Rio Dela Plata Bakery' },
+//   { avgScore: 44, numGrades: 1, nome: 'Planet Sushi' },
+//   { avgScore: 33.5, numGrades: 2, nome: 'Dojo Restaurant' },
+//   { avgScore: 34, numGrades: 2, nome: 'New Victory Restaurant' }
+// ]
 
 
 // 26. Encontre o restaurante com a maior latitude na coleção.
@@ -2523,23 +2556,911 @@ db.restaurants.find({}, { _id: 0, nome: 1, 'address.coord': 1}).sort({ 'address.
 // ]
 
 
-// 27. Liste os restaurantes que têm pelo menos três avaliações feitas no mesmo dia.
-db.ex4b.aggregate([
-    { $unwind: "$requests" },
-    {
-        $project: {
-            nome: 1,
-            data: {
-                $dateToString: { format: "%Y-%m-%d", date: { $toDate: "$requests.timestamp" } }
-            }
-        }
-    },
-    { $group: { _id: { nome: "$nome", data: "$data" }, count: { $sum: 1 } } },
-    { $match: { count: { $gte: 3 } } },
-    { $group: { _id: "$_id.nome" } },
-    { $project: { _id: 0, nome: "$_id" } }
-])
-
+// 27. Liste os restaurantes que têm pelo menos dez avaliações feitas.
+db.restaurants.aggregate([ { $match: { $expr: { $gte: [ { $size: "$grades" }, 8 ] } } }, { $project: { _id: 0, nome: 1, grades: 1 } } ])
+// [
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-04-21T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2013-11-12T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 5
+//       },
+//       {
+//         date: ISODate('2013-06-04T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-11-14T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2012-10-11T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 0
+//       },
+//       {
+//         date: ISODate('2012-05-24T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2011-12-08T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2011-07-20T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       }
+//     ],
+//     nome: 'Ho Mei Restaurant'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-02-20T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2013-09-09T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2013-03-26T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 5
+//       },
+//       {
+//         date: ISODate('2013-03-08T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2012-09-26T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 9
+//       },
+//       {
+//         date: ISODate('2012-04-13T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2011-07-26T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2011-02-26T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       }
+//     ],
+//     nome: 'Blue Bay Restaurant'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-10-14T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2014-04-08T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 8
+//       },
+//       {
+//         date: ISODate('2013-11-04T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 45
+//       },
+//       {
+//         date: ISODate('2013-05-23T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2012-10-18T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 15
+//       },
+//       {
+//         date: ISODate('2012-10-05T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-05-14T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2011-12-21T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       }
+//     ],
+//     nome: 'Bronx Grill'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-04-08T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 7
+//       },
+//       {
+//         date: ISODate('2013-11-07T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2013-10-23T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 5
+//       },
+//       {
+//         date: ISODate('2013-05-07T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-11-15T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 16
+//       },
+//       {
+//         date: ISODate('2012-04-17T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 18
+//       },
+//       {
+//         date: ISODate('2011-11-23T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 36
+//       },
+//       {
+//         date: ISODate('2011-06-23T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       }
+//     ],
+//     nome: 'Park Plaza Restaurant'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2015-01-03T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2014-07-01T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 7
+//       },
+//       {
+//         date: ISODate('2014-01-28T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 18
+//       },
+//       {
+//         date: ISODate('2013-07-18T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 15
+//       },
+//       {
+//         date: ISODate('2013-02-07T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 24
+//       },
+//       {
+//         date: ISODate('2013-01-11T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 3
+//       },
+//       {
+//         date: ISODate('2012-08-02T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 17
+//       },
+//       {
+//         date: ISODate('2012-03-29T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 21
+//       }
+//     ],
+//     nome: 'Green Pavilion Restaurant & Sports Lounge'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-04-10T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2013-10-01T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 6
+//       },
+//       {
+//         date: ISODate('2013-04-11T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 25
+//       },
+//       {
+//         date: ISODate('2012-10-25T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-10-10T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-05-25T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 14
+//       },
+//       {
+//         date: ISODate('2011-09-14T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 26
+//       },
+//       {
+//         date: ISODate('2011-04-25T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 76
+//       }
+//     ],
+//     nome: 'El Molino Rojo Restaurant'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-12-15T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 16
+//       },
+//       {
+//         date: ISODate('2014-08-07T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 56
+//       },
+//       {
+//         date: ISODate('2014-01-28T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 27
+//       },
+//       {
+//         date: ISODate('2013-07-17T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 5
+//       },
+//       {
+//         date: ISODate('2013-07-03T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 0
+//       },
+//       {
+//         date: ISODate('2013-01-07T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 14
+//       },
+//       {
+//         date: ISODate('2012-08-20T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2012-02-29T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       }
+//     ],
+//     nome: 'World Cup Cafe'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-11-17T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2014-06-17T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2013-12-26T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 9
+//       },
+//       {
+//         date: ISODate('2013-07-23T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 9
+//       },
+//       {
+//         date: ISODate('2013-07-10T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2013-02-13T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 9
+//       },
+//       {
+//         date: ISODate('2012-08-23T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2012-03-30T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       }
+//     ],
+//     nome: 'Fifth Ave Cafe /Diner'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-08-07T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2014-02-20T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 7
+//       },
+//       {
+//         date: ISODate('2013-06-27T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 8
+//       },
+//       {
+//         date: ISODate('2013-03-06T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2012-08-28T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 19
+//       },
+//       {
+//         date: ISODate('2012-08-06T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2012-03-21T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 31
+//       },
+//       {
+//         date: ISODate('2011-09-07T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 25
+//       }
+//     ],
+//     nome: 'Oriental Express'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-12-01T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 19
+//       },
+//       {
+//         date: ISODate('2014-06-30T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 19
+//       },
+//       {
+//         date: ISODate('2014-06-09T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 3
+//       },
+//       {
+//         date: ISODate('2013-12-11T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 33
+//       },
+//       {
+//         date: ISODate('2013-04-17T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 45
+//       },
+//       {
+//         date: ISODate('2012-10-15T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 23
+//       },
+//       {
+//         date: ISODate('2012-05-03T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2011-12-19T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 31
+//       }
+//     ],
+//     nome: 'Cafe Asean'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-09-25T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2014-04-16T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2013-10-18T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2013-04-25T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 16
+//       },
+//       {
+//         date: ISODate('2012-11-16T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 8
+//       },
+//       {
+//         date: ISODate('2012-06-08T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 25
+//       },
+//       {
+//         date: ISODate('2012-02-03T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2011-12-02T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 6
+//       }
+//     ],
+//     nome: 'El Castillo De Madison'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-03-31T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2013-09-30T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2013-04-10T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 27
+//       },
+//       {
+//         date: ISODate('2013-03-27T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2012-10-01T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-05-08T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 7
+//       },
+//       {
+//         date: ISODate('2011-11-23T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2011-07-01T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 8
+//       }
+//     ],
+//     nome: 'China Chalet'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-03-26T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2013-10-16T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 19
+//       },
+//       {
+//         date: ISODate('2013-03-05T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 7
+//       },
+//       {
+//         date: ISODate('2012-09-04T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-02-07T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 16
+//       },
+//       {
+//         date: ISODate('2011-11-04T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 17
+//       },
+//       {
+//         date: ISODate('2011-06-24T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2011-05-27T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 5
+//       }
+//     ],
+//     nome: "Vee'S Restaurant"
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-09-23T00:00:00.000Z'),
+//         grade: 'Z',
+//         score: 22
+//       },
+//       {
+//         date: ISODate('2014-04-08T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 26
+//       },
+//       {
+//         date: ISODate('2013-03-13T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-10-26T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2012-10-11T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-05-29T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 27
+//       },
+//       {
+//         date: ISODate('2012-01-17T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 22
+//       },
+//       {
+//         date: ISODate('2011-10-03T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 16
+//       }
+//     ],
+//     nome: 'Fuji Bakery'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-11-13T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 27
+//       },
+//       {
+//         date: ISODate('2014-04-16T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2013-09-11T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 26
+//       },
+//       {
+//         date: ISODate('2013-08-28T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2013-05-21T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 25
+//       },
+//       {
+//         date: ISODate('2012-11-23T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 26
+//       },
+//       {
+//         date: ISODate('2012-08-01T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-03-07T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 23
+//       }
+//     ],
+//     nome: 'Woo Chon Restaurant'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-07-08T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2014-02-06T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2013-08-19T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 9
+//       },
+//       {
+//         date: ISODate('2013-03-14T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2012-10-03T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2012-05-07T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 20
+//       },
+//       {
+//         date: ISODate('2011-12-20T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2011-08-11T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       }
+//     ],
+//     nome: 'Gemini Diner'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-06-12T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2014-01-29T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2013-08-16T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 6
+//       },
+//       {
+//         date: ISODate('2013-03-06T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2013-02-15T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2012-08-23T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 9
+//       },
+//       {
+//         date: ISODate('2011-10-18T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2011-06-27T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 15
+//       }
+//     ],
+//     nome: 'Burger King'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-03-18T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2013-10-08T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2013-09-20T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 3
+//       },
+//       {
+//         date: ISODate('2013-04-05T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2012-09-28T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 58
+//       },
+//       {
+//         date: ISODate('2012-04-28T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 23
+//       },
+//       {
+//         date: ISODate('2011-10-06T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 23
+//       },
+//       {
+//         date: ISODate('2011-05-10T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 26
+//       }
+//     ],
+//     nome: 'Latino Restaurant'
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-12-20T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 10
+//       },
+//       {
+//         date: ISODate('2014-07-14T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 4
+//       },
+//       {
+//         date: ISODate('2014-01-29T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 0
+//       },
+//       {
+//         date: ISODate('2014-01-03T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 3
+//       },
+//       {
+//         date: ISODate('2013-07-30T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2013-02-11T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2012-08-20T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       },
+//       {
+//         date: ISODate('2012-03-30T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       }
+//     ],
+//     nome: "Dunkin' Donuts/Baskin Robins"
+//   },
+//   {
+//     grades: [
+//       {
+//         date: ISODate('2014-12-01T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 4
+//       },
+//       {
+//         date: ISODate('2014-07-25T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 7
+//       },
+//       {
+//         date: ISODate('2014-02-07T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 4
+//       },
+//       {
+//         date: ISODate('2014-01-10T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2013-07-31T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 28
+//       },
+//       {
+//         date: ISODate('2013-07-12T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 0
+//       },
+//       {
+//         date: ISODate('2012-07-18T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 5
+//       },
+//       {
+//         date: ISODate('2012-01-09T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 17
+//       }
+//     ],
+//     nome: 'Subway'
+//   }
+// ]
+ 
 // 28. Liste para cada gastronomia o número de restaurantes na localidade Bronx, em ordem decrescente de número de restaurantes
 db.restaurants.aggregate([ { $match: { localidade: "Bronx" } }, { $group: { _id: "$gastronomia", numRestaurants: { $sum: 1 } } }, { $sort: { numRestaurants: -1 } } ])
 // [
@@ -2651,30 +3572,88 @@ db.restaurants.find({ $and: [{ $or: [{ gastronomia: 'Delicatessen' }, { gastrono
 
 
 
-// 30. Liste os restaurantes que receberam mais de 5 avaliações e que possuem pelo menos uma avaliação com score de 90.
-db.restaurants.aggregate([
-  {
-    $match: {
-      "grades.score": 90
-    }
-  },
-  {
-    $addFields: {
-      totalGrades: { $size: "$grades" }
-    }
-  },
-  {
-    $match: {
-      totalGrades: { $gt: 5 }
-    }
-  },
-  {
-    $project: {
-      nome: 1,
-      localidade: 1,
-      gastronomia: 1,
-      totalGrades: 1,
-      grades: 1
-    }
-  }
-])
+// 30. Liste os restaurantes que receberam mais de 5 avaliações e que possuem pelo menos uma avaliação com score superior a 90.
+db.restaurants.aggregate([ { $match: { "grades.score": { $gt: 90 }, $expr: { $gt: [ { $size: "$grades" }, 5 ] } } }, { $project: { _id: 0, nome: 1, localidade: 1, gastronomia: 1, totalGrades: { $size: "$grades" }, grades: 1 } } ])
+// [
+//   {
+//     localidade: 'Manhattan',
+//     gastronomia: 'American',
+//     grades: [
+//       {
+//         date: ISODate('2014-08-22T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2014-03-28T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 131
+//       },
+//       {
+//         date: ISODate('2013-09-25T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2013-04-08T00:00:00.000Z'),
+//         grade: 'B',
+//         score: 25
+//       },
+//       {
+//         date: ISODate('2012-10-15T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 11
+//       },
+//       {
+//         date: ISODate('2011-10-19T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 13
+//       }
+//     ],
+//     nome: "Murals On 54/Randolphs'S",
+//     totalGrades: 6
+//   },
+//   {
+//     localidade: 'Manhattan',
+//     gastronomia: 'Indian',
+//     grades: [
+//       {
+//         date: ISODate('2014-09-15T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 5
+//       },
+//       {
+//         date: ISODate('2014-01-14T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 8
+//       },
+//       {
+//         date: ISODate('2013-05-30T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 12
+//       },
+//       {
+//         date: ISODate('2013-04-24T00:00:00.000Z'),
+//         grade: 'P',
+//         score: 2
+//       },
+//       {
+//         date: ISODate('2012-10-01T00:00:00.000Z'),
+//         grade: 'A',
+//         score: 9
+//       },
+//       {
+//         date: ISODate('2012-04-06T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 92
+//       },
+//       {
+//         date: ISODate('2011-11-03T00:00:00.000Z'),
+//         grade: 'C',
+//         score: 41
+//       }
+//     ],
+//     nome: 'Gandhi',
+//     totalGrades: 7
+//   }
+// ]
