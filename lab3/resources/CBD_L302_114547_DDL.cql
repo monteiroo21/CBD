@@ -10,25 +10,47 @@ CREATE TABLE IF NOT EXISTS user (
 );
 
 CREATE TABLE IF NOT EXISTS video (
-    id UUID PRIMARY KEY,
+    id UUID,
     share_author TEXT,
     name TEXT,
     description TEXT,
     tag SET<TEXT>,
-    upload_timestamp TIMESTAMP
-);
+    upload_timestamp TIMESTAMP,
+    PRIMARY KEY(name, upload_timestamp)
+) WITH CLUSTERING ORDER BY (upload_timestamp DESC);
+
+CREATE TABLE IF NOT EXISTS video_author (
+    id UUID,
+    share_author TEXT,
+    name TEXT,
+    description TEXT,
+    tag SET<TEXT>,
+    upload_timestamp TIMESTAMP,
+    PRIMARY KEY(share_author, upload_timestamp)
+) WITH CLUSTERING ORDER BY (upload_timestamp DESC);
 
 CREATE TABLE IF NOT EXISTS comments (
-    id UUID PRIMARY KEY,
+    id UUID,
     video TEXT,
     ts TIMESTAMP,
     author TEXT,
-    comment TEXT
-);
+    comment TEXT,
+    PRIMARY KEY(video, ts)
+) WITH CLUSTERING ORDER BY (ts DESC);
+
+CREATE TABLE IF NOT EXISTS comments_author (
+    id UUID,
+    video TEXT,
+    ts TIMESTAMP,
+    author TEXT,
+    comment TEXT,
+    PRIMARY KEY(author, ts)
+) WITH CLUSTERING ORDER BY (ts DESC);
 
 CREATE TABLE IF NOT EXISTS followers (
-    video TEXT PRIMARY KEY,
-    followers SET<TEXT>
+    video TEXT,
+    followers SET<TEXT>,
+    PRIMARY KEY(video)
 );
 
 CREATE TABLE IF NOT EXISTS events (
@@ -42,7 +64,7 @@ CREATE TABLE IF NOT EXISTS events (
 );
 
 CREATE TABLE IF NOT EXISTS ratings (
-    id UUID PRIMARY KEY,
     rating INT,
-    video TEXT
+    video TEXT,
+    PRIMARY KEY(video, rating)
 );

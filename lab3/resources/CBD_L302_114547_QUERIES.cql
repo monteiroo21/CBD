@@ -1,22 +1,30 @@
 // 7. Permitir a pesquisa de todos os videos de determinado autor;
+SELECT JSON * FROM cbd_videos.video_author WHERE share_author = 'eduardo_b';
 
 // 8. Permitir a pesquisa de comentarios por utilizador, ordenado inversamente pela data;
+SELECT JSON * FROM cbd_videos.comments_author WHERE author = 'pedro_p';
 
 // 9. Permitir a pesquisa de comentarios por videos, ordenado inversamente pela data;
+SELECT JSON * FROM cbd_videos.comments WHERE video = 'Top 10 filmes de ação';
 
 // 10. Permitir a pesquisa do rating medio de um video e quantas vezes foi votado;
-
+SELECT JSON AVG(rating), COUNT(rating) FROM cbd_videos.ratings WHERE video = 'Top 10 filmes de ação';
 
 
 // 1. Os ultimos 3 comentarios introduzidos para um video;
+SELECT JSON * FROM cbd_videos.comments WHERE video = 'Top 10 filmes de ação' LIMIT 3;
 
 // 2. Lista das tags de determinado video;UA.DETI.CBD- 2023/24 15
+SELECT JSON tag FROM cbd_videos.video WHERE name = 'Tour pela minha casa';
 
 // 3. Todos os videos com a tag Aveiro;
 
+
 // 4.a. Os últimos 5 eventos de determinado vídeo realizados por um utilizador;
+SELECT JSON * FROM cbd_videos.events WHERE video = 'Tour pela minha casa' AND user = 'paulo_m' LIMIT 5;
 
 // 4.b. Todos os eventos de determinado utilizador;
+SELECT JSON * FROM cbd_videos.events WHERE user = 'paulo_m';
 
 // 4.c. Todos os eventos de determinado utilizador to tipo "pause"
 
