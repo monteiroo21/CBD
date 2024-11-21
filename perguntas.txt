@@ -1,0 +1,101 @@
+1- V
+2- B
+3- V
+4- B
+5- B
+6- ?    F
+7- A/D  A
+8- V
+9- B
+10- C
+11- F
+12- C
+13- B?  B
+14- V
+15- A/B B
+16- expire sessão:123 300
+17- V
+18- C
+19- db.clientes.insertOne({nome: "Carlos", idade: 34 });
+20- A
+21- F
+22- B
+23- SELECT * FROM clientes
+24- V
+25- C/D   B
+26- B
+27- F
+28- B
+29- V
+30- B
+31- B
+32- V
+33- A/D?   D
+34- A
+35- V
+36- db.produtos.find({ preco: { $gt: 10 } })
+37- C
+38- V
+39- C
+40- redis-cli RPUSH documentos doc1 (could also use LPUSH if we wanted to add to the beggining of the list)
+41- B
+42- V
+43- D?    B
+44- V
+45- ?     A
+46- V
+47- ?     B
+48- CREATE TABLE clientes (id INT PRIMARY KEY, nome VARCHAR)
+49- V
+50- B
+51- V
+52- B
+53- V
+54- A
+55- V
+56- A
+57- SADD linguagens Python
+58- ?     F
+59- A
+60- V
+61- B
+62- A/B   B
+63- V
+64- C
+65- B
+66- V
+67- C
+68- UPDATE clientes SET nome = 'João' WHERE id = 123
+69- V
+70- C
+71- C
+72- F
+73- B
+74- A/D
+75- F    V
+76- B
+77- db.clientes.find({ cidade: "Lisboa" })
+78- C
+79- V
+80- B
+81- F    V
+82- redis-cli GET tarefas       redis-cli LRANGE tarefas 0 -1
+83- B/D
+84- V
+85- A/B  A
+86- V
+87- B
+88- F
+89- B
+90- V
+91- C
+92- V
+93- A
+94- F
+95- ?    D
+96- V 
+97- D    B
+98- DELETE FROM vendas WHERE ano = 2022
+99- V
+100- A
+

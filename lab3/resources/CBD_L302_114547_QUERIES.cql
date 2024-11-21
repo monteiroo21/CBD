@@ -24,7 +24,6 @@ SELECT JSON tag FROM cbd_videos.video WHERE name = 'Tour pela minha casa';
 SELECT JSON * FROM cbd_videos.events WHERE video = 'Tour pela minha casa' AND user = 'paulo_m' LIMIT 5;
 
 // 4.b. Todos os eventos de determinado utilizador;
-SELECT JSON * FROM cbd_videos.events WHERE user = 'paulo_m';
 
 // 4.c. Todos os eventos de determinado utilizador to tipo "pause"
 
