@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS video_by_tag (
     name TEXT,
     tag TEXT,
     PRIMARY KEY(tag, name)
-) WITH CLUSTERING ORDER BY (upload_timestamp DESC);
+);
 
 CREATE TABLE IF NOT EXISTS comments (
     id UUID,
@@ -82,5 +82,22 @@ CREATE INDEX ON events(type);
 CREATE TABLE IF NOT EXISTS ratings (
     rating INT,
     video TEXT,
-    PRIMARY KEY(video, rating)
-);
+    ts TIMESTAMP,
+    PRIMARY KEY(video, ts)
+) WITH CLUSTERING ORDER BY (ts DESC);
+
+CREATE TABLE IF NOT EXISTS views_by_user (
+    user TEXT,
+    video TEXT,
+    views INT,
+    video_ts TIMESTAMP,
+    PRIMARY KEY(user, video_ts)
+) WITH CLUSTERING ORDER BY (video_ts DESC);
+
+CREATE TABLE IF NOT EXISTS views_by_video(
+    user TEXT,
+    video TEXT,
+    views INT,
+    video_ts TIMESTAMP,
+    PRIMARY KEY(video, video_ts)
+) WITH CLUSTERING ORDER BY (video_ts DESC);

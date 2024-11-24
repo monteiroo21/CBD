@@ -38,7 +38,7 @@ SELECT JSON * FROM cbd_videos.video_author WHERE share_author = 'paulo_m' AND up
 SELECT JSON followers FROM cbd_videos.followers WHERE video = 'Top 10 filmes de ação';
 
 // 8. Todos os comentarios (dos videos) que determinado utilizador esta a seguir (following);
-
+SELECT JSON * FROM cbd_videos.comments_follower WHERE follower = 'nuno_s';
 
 // 9. Os 5 videos com maior rating;
 
@@ -48,8 +48,12 @@ SELECT JSON share_author, upload_timestamp FROM cbd_videos.video_author;
 // 11. Lista com as Tags existentes e o numero de videos catalogados com cada uma delas;
 SELECT JSON tag, COUNT(name) AS "videos" FROM cbd_videos.video_by_tag GROUP BY tag;
 
-// 12.
+// 12. Número de comentarios feitos por cada utilizador;
+SELECT JSON author, COUNT(comment) AS "comments" FROM cbd_videos.comments_author GROUP BY author;
 
-// 13.
+// 13. Os 5 videos mais vistos;
+// Esta query não é possível de ser feita em Cassandra (explicar depois)
+// SELECT JSON video, SUM(views) AS "views" FROM cbd_videos.views_by_video GROUP BY video;
 
-// 14.
+// 14. Número de visualizações de um utilizador por video.
+SELECT JSON user, SUM(views) AS "views" FROM cbd_videos.views_by_user GROUP BY user;
