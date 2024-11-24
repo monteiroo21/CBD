@@ -10,6 +10,12 @@ public class Main {
             ResultSet rs = session.execute("select release_version from system.local");              // (2)
             Row row = rs.one();
             System.out.println(row.getString("release_version"));                                    // (3)
+
+            System.out.println("----------------------------------\n");
+            System.out.println("Insertion\n");
+
+            session.execute("INSER INTO cbd_videos.user(id, username, email, registration_timestamp) VALUES (uuid(), 'João Monteiro', 'joaomonteiro@gmail.com', toTimestamp(now()))");
+            
         }
     }
 }
