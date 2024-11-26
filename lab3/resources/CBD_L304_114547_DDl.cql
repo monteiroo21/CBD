@@ -56,3 +56,44 @@ CREATE TABLE IF NOT EXISTS match_goals (
     PRIMARY KEY (match, player)
 );
 
+
+CREATE OR REPLACE FUNCTION average_goal_minute(minutes list<int>)
+RETURNS NULL ON NULL INPUT
+RETURNS double
+LANGUAGE java AS '
+    if (minutes != null) {
+        int totalMinutes = 0;
+        int count = 0;
+        for (Integer minute : minutes) {
+            if (minute != null) {
+                totalMinutes += minute;
+                count++;
+            }
+        }
+        if (count == 0) {
+            return null;
+        }
+    }
+    return totalMinutes / (double) count;
+';
+
+
+CREATE OR REPLACE FUNCTION sum_goals(state int, score map<text, int>)  
+RETURNS NULL ON NULL INPUT
+RETURNS INT
+LANGUAGE java AS '
+    int totalGoals = state;
+    if (score != null) {
+        for (Integer goals : score.values()) {
+            if (goals != null) {
+                totalGoals += goals;
+            }
+        }
+    }
+    return totalGoals;
+';
+
+CREATE OR REPLACE AGGREGATE total_goals(map<text, int>)
+SFUNC sum_goals
+STYPE int
+INITCOND 0;
