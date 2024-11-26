@@ -3,10 +3,11 @@ CREATE KEYSPACE cbd_videos WITH REPLICATION = { 'class' : 'SimpleStrategy', 'rep
 use cbd_videos;
 
 CREATE TABLE IF NOT EXISTS user (
-    id UUID PRIMARY KEY,
+    id UUID,
     username TEXT,
     email TEXT,
-    registration_timestamp TIMESTAMP
+    registration_timestamp TIMESTAMP,
+    PRIMARY KEY (username, id)
 );
 
 CREATE TABLE IF NOT EXISTS video (
