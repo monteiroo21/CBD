@@ -45,10 +45,13 @@ INSERT INTO cbd_football.tournament (name, country, teams) VALUES ('Croatian Fir
 
 
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Kylian Mbappé', 'Real Madrid');
+INSERT INTO cbd_football.player_team (player, team) VALUES ('Kylian Mbappé', 'Paris Saint-Germain');
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Virgil van Dijk', 'Liverpool');
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Robert Lewandowski', 'Barcelona');
+INSERT INTO cbd_football.player_team (player, team) VALUES ('Robert Lewandowski', 'Bayern Munich');
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Manuel Neuer', 'Bayern Munich');
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Mo Salah', 'Liverpool');
+INSERT INTO cbd_football.player_team (player, team) VALUES ('Mo Salah', 'Chelsea');
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Kerem Akturkoglou', 'Benfica');
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Fredrik Aursnes', 'Benfica');
 INSERT INTO cbd_football.player_team (player, team) VALUES ('Trent Alexander-Arnold', 'Liverpool');
@@ -61,16 +64,16 @@ INSERT INTO cbd_football.player_team (player, team) VALUES ('Erling Haaland', 'M
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Real Madrid', 'Liverpool', '2023-10-01 20:00:00', 'UEFA Champions League', {'Real Madrid': 3, 'Liverpool': 1});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Bayern Munich', 'Barcelona', '2020-10-01 20:00:00', 'UEFA Champions League', {'Bayern Munich': 8, 'Barcelona': 2});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Benfica', 'Juventus', '2021-10-01 20:00:00', 'UEFA Champions League', {'Benfica': 4, 'Juventus': 3});
-INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Borussia Dortmund', 'AC Milan', '2022-10-01 20:00:00', 'UEFA Champions League', {'Liverpool': 4, 'Barcelona': 0});
-INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Paris Saint-Germain', 'Manchester City', '2023-10-01 20:00:00', 'UEFA Champions League', {'Paris Saint-Germain': 1, 'Benfica': 1});
+INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Liverpool', 'Barcelona', '2022-10-01 20:00:00', 'UEFA Champions League', {'Liverpool': 4, 'Barcelona': 0});
+INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Paris Saint-Germain', 'Benfica', '2023-10-01 20:00:00', 'UEFA Champions League', {'Paris Saint-Germain': 1, 'Benfica': 1});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Chelsea', 'Manchester United', '2023-10-01 20:00:00', 'Premier League', {'Chelsea': 2, 'Manchester United': 1});
-INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Chelsea', 'Manchester United', '2023-10-01 20:00:00', 'Premier League', {'Liverpool': 7, 'Manchester United': 0});
+INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Liverpool', 'Manchester United', '2023-10-01 20:00:00', 'Premier League', {'Liverpool': 7, 'Manchester United': 0});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Real Madrid', 'Barcelona', '2023-10-01 20:00:00', 'La Liga', {'Real Madrid': 2, 'Barcelona': 1});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Juventus', 'AC Milan', '2023-10-01 20:00:00', 'Serie A', {'Juventus': 3, 'AC Milan': 1});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Bayern Munich', 'Borussia Dortmund', '2023-10-01 20:00:00', 'Bundesliga', {'Bayern Munich': 2, 'Borussia Dortmund': 1});
-INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Paris Saint-Germain', 'Manchester City', '2023-10-01 20:00:00', 'Primeira Liga', {'Benfica': 3, 'Vitória SC': 1});
+INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Benfica', 'Vitória SC', '2023-10-01 20:00:00', 'Primeira Liga', {'Benfica': 3, 'Vitória SC': 1});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Ajax', 'PSV', '2023-10-01 20:00:00', 'Eredivisie', {'Ajax': 2, 'PSV': 2});
-INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Dinamo Kyiv', 'Dinamo Zagreb', '2024-10-01 20:00:00', 'Croatian First Football League', {'Hadjuk Split': 1, 'Dinamo Zagreb': 0});
+INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Hadjuk Split', 'Dinamo Zagreb', '2024-10-01 20:00:00', 'Croatian First Football League', {'Hadjuk Split': 1, 'Dinamo Zagreb': 0});
 INSERT INTO cbd_football.match (home_team, away_team, date, tournament, score) VALUES ('Hadjuk Split', 'Dinamo Zagreb', '2023-10-01 20:00:00', 'Croatian First Football League', {'Hadjuk Split': 2, 'Dinamo Zagreb': 1});
 
 

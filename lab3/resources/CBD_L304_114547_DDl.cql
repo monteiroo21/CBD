@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS player (
     PRIMARY KEY (name, id)
 );
 
+CREATE INDEX IF NOT EXISTS ON cbd_football.player(position);
+
 CREATE TABLE IF NOT EXISTS team (
     id UUID,
     name TEXT,
@@ -18,6 +20,8 @@ CREATE TABLE IF NOT EXISTS team (
     foundation_year INT,
     PRIMARY KEY (name, id)
 );
+
+CREATE INDEX IF NOT EXISTS ON cbd_football.team(country);
 
 CREATE TABLE IF NOT EXISTS tournament (
     name TEXT,
@@ -41,6 +45,9 @@ CREATE TABLE IF NOT EXISTS match (
     PRIMARY KEY ((home_team, away_team), date)
 ) WITH CLUSTERING ORDER BY (date DESC);
 
+CREATE INDEX IF NOT EXISTS ON cbd_football.match(tournament);
+CREATE INDEX IF NOT EXISTS ON cbd_football.match(home_team);
+
 CREATE TABLE IF NOT EXISTS match_players (
     match TEXT,
     player TEXT,
@@ -61,9 +68,9 @@ CREATE OR REPLACE FUNCTION average_goal_minute(minutes list<int>)
 RETURNS NULL ON NULL INPUT
 RETURNS double
 LANGUAGE java AS '
+    int totalMinutes = 0;
+    int count = 0;
     if (minutes != null) {
-        int totalMinutes = 0;
-        int count = 0;
         for (Integer minute : minutes) {
             if (minute != null) {
                 totalMinutes += minute;
@@ -75,6 +82,20 @@ LANGUAGE java AS '
         }
     }
     return totalMinutes / (double) count;
+';
+
+CREATE OR REPLACE FUNCTION list_size(minutes list<int>)
+RETURNS NULL ON NULL INPUT
+RETURNS int
+LANGUAGE java AS '
+    return minutes == null ? 0 : minutes.size();
+';
+
+CREATE OR REPLACE FUNCTION set_size(teams set<text>)
+RETURNS NULL ON NULL INPUT
+RETURNS int
+LANGUAGE java AS '
+    return teams == null ? 0 : teams.size();
 ';
 
 

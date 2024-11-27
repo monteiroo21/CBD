@@ -1,20 +1,49 @@
-// 1. Média de idades de uma equipa;
-SELECT JSON name, average_age(ages) AS "average_age" FROM cbd_football.team GROUP BY name;
+// 1. Lista de avançados;
+SELECT name, age 
+FROM cbd_football.player
+WHERE position = 'Forward';
 
-// 2. Lista das tags de determinado video;UA.DETI.CBD- 2023/24 15
+// 2. Obter os últimos três jogos;
+SELECT home_team, away_team, date 
+FROM cbd_football.match 
+LIMIT 3;
 
-// 3. Todos os videos com a tag Vlogs;
+// 3. Localização de cada torneio;
+SELECT name, country 
+FROM cbd_football.tournament;
 
-// 4. Os últimos 5 eventos de determinado vídeo realizados por um utilizador;
+// 4. Lista de equipas que 'Mo Salah' já representou;
+SELECT team 
+FROM cbd_football.player_team 
+WHERE player = 'Mo Salah';
 
-// 5. Videos partilhados por determinado utilizador (maria1987, por exemplo) num determinado periodo de tempo (Agosto de 2017, por exemplo);
+// 5. Número de equipas por torneio;
+SELECT name, set_size(teams) AS "number_of_teams" 
+FROM cbd_football.tournament;
 
-// 6. Os ultimos 10 videos, ordenado inversamente pela data da partilhada;
+// 6. Número de golos marcados por 'Mo Salah' no 'Liverpool vs Manchester United';
+SELECT list_size(minutes) AS total_goals 
+FROM cbd_football.match_goals
+WHERE match = 'Liverpool vs Manchester United' AND player = 'Mo Salah';
 
-// 7. Todos os seguidores (followers) de determinado video;
+// 7. Média de minutos de golos por jogador;
+SELECT JSON match, player, average_goal_minute(minutes) AS "average_goal_minute" 
+FROM cbd_football.match_goals 
+GROUP BY match, player;
 
-// 8. Todos os comentarios (dos videos) que determinado utilizador esta a seguir (following);
+// 8. Número de golos na 'Champions League';
+SELECT total_goals(score) AS total_goals 
+FROM cbd_football.match 
+WHERE tournament = 'UEFA Champions League';
 
-// 9. Os 5 videos com maior rating;
+// 9. Lista de clubes de Inglaterra;
+SELECT name 
+FROM cbd_football.team 
+WHERE country = 'England';
 
-// 10. Uma query que retorne todos os videos e que mostre claramente a forma pela qual estao ordenados;
+// 10. Número de golos marcados em jogos na casa do Benfica;
+SELECT total_goals(score) AS total_goals 
+FROM cbd_football.match 
+WHERE home_team = 'Benfica';
+
+

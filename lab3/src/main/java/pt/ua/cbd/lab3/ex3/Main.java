@@ -15,7 +15,6 @@ public class Main {
             Row row = rs.one();
             System.out.println(row.getString("release_version"));
 
-            /*
             System.out.println("\n----------------------------------");
             System.out.println("Insertion and Search\n");
 
@@ -49,7 +48,6 @@ public class Main {
                     "Username = " + userRowUpdated.getString("username") +
                     ", Email = " + userRowUpdated.getString("email"));
             }
-            */
 
             ResultSet query1 = session.execute("SELECT JSON * FROM cbd_videos.events WHERE user = 'paulo_m' AND type = 'pause'");
             System.out.println("\n4.c. Todos os eventos de determinado utilizador to tipo \"pause\":");

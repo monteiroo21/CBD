@@ -317,14 +317,9 @@ INSERT INTO cbd_videos.views_by_video (video, user, views, video_ts) VALUES ('5 
 
 
 
-SELECT * FROM cbd_videos.user;
-SELECT * FROM cbd_videos.video;
-SELECT * FROM cbd_videos.video_author;
-SELECT * FROM cbd_videos.video_by_tag;
-SELECT * FROM cbd_videos.comments;
-SELECT * FROM cbd_videos.comments_author;
-SELECT * FROM cbd_videos.comments_follower;
-SELECT * FROM cbd_videos.followers;
-SELECT * FROM cbd_videos.events;
-SELECT * FROM cbd_videos.ratings;
-SELECT * FROM cbd_videos.views_by_user;
+SELECT JSON * FROM cbd_videos.user;
+SELECT JSON * FROM cbd_videos.video;
+SELECT JSON * FROM cbd_videos.comments;
+SELECT JSON * FROM cbd_videos.followers;
+SELECT JSON * FROM cbd_videos.events;
+SELECT JSON * FROM cbd_videos.ratings;
