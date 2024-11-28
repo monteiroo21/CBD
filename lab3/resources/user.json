@@ -1,0 +1,16 @@
+[
+    {"username": "maria_f", "id": "274c984b-9995-4f8e-adf8-6a71673fae6a", "email": "mariafreitas@hotmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "ana_s", "id": "f44e9b03-45a9-4c8a-b11b-1723e8c25242", "email": "anasantos@gmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "ines_g", "id": "5a9b6c34-7ce3-486a-a0cd-9d90868cf1ef", "email": "inesgomes@hotmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "rita_c", "id": "9b0893b2-99a3-4833-b112-4dba166f603d", "email": "ritacarvalho@ua.pt", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "paulo_m", "id": "7c184168-5db1-462e-a88a-d6a00fe5e41e", "email": "paulomartins@ua.pt", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "eduardo_b", "id": "3ade80c1-501c-4a24-8607-6adedf44ed7b", "email": "eduardobrito@hotmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "carlos_t", "id": "9bd54332-5618-4af9-aa66-f95b2fc01519", "email": "carlos_trindade@gmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "catarina_a", "id": "4087b778-6fe9-4115-aebd-28fa27937f4f", "email": "catarinaalmeida@ua.pt", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "nuno_s", "id": "22437fa7-ed5e-4212-b86d-16dd4a1ba220", "email": "nunosilva@outlook.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "tiago_l", "id": "ef92776f-ebba-4d62-8d07-5c4a16e3e23c", "email": "tiagolima@gmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "david_r", "id": "0aa3a3ec-dc7c-40d7-af25-7ff51863fba0", "email": "davidrocha@hotmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "lucia_n", "id": "a548b581-b638-4803-8a86-1bce5f074325", "email": "lucianeto@gmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "joana_b", "id": "b3227bee-c73f-45fc-9ad4-6af0f0f08630", "email": "joanaborges@gmail.com", "registration_timestamp": "2024-01-01 12:00:00.000Z"},
+    {"username": "pedro_p", "id": "7fc95b46-781a-4292-9ae7-35c3ebbc30d2", "email": "pedropereira@ua.pt", "registration_timestamp": "2024-01-01 12:00:00.000Z"}
+]
