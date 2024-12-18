@@ -40,7 +40,7 @@ public class Main {
             String name = data[5];
             String constructor = data[6];
             Integer grid = Integer.parseInt(data[7]);
-            String position = data[8];
+            String position = data[8].equals("\\N") ? "Not Classified" : data[8];
             String status = data[9];
 
             try (Session session = driver.session()) {
@@ -64,7 +64,7 @@ public class Main {
                             "name", name,
                             "constructor", constructor,
                             "grid", grid,
-                            "position", position.equals("\\N") ? null : Integer.parseInt(position),
+                            "position", position,
                             "status", status
                         )
                     );

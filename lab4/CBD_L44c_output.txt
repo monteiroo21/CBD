@@ -1,0 +1,17 @@
+# Lista de todos os pilotos
+MATCH (d:Driver)
+RETURN d.name, d.surname
+
+# Número de pilotos que correu por cada equipa
+MATCH (d:Driver)-[:DRIVES_FOR]->(c:Constructor)
+RETURN c.name, count(d)
+
+# Pilotos que participaram numa corrida num dado ano
+MATCH (d:Driver)-[:RACED_IN]->(r:Race)
+WHERE replace(r.name, '"', '') = "British Grand Prix" AND r.year = 2019
+RETURN d.name, d.surname
+
+# Resultados de um piloto
+MATCH (d:Driver)-[:PARTICIPATED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result)
+WHERE replace(d.name, '"', '') = "Ayrton" AND replace(d.surname, '"', '') = "Senna"
+RETURN r.name AS RaceName, res.grid AS StartingGrid, res.position AS FinalPosition, res.status AS Status;
