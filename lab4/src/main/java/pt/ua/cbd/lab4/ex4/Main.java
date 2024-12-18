@@ -75,6 +75,50 @@ public class Main {
         br.close();
     }
 
+    private void executeQueries() {
+        try (Session session = driver.session()) {
+            System.out.println("# Lista de todos os pilotos");
+            session.run("MATCH (d:Driver) RETURN d.name, d.surname").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# Número de corridas por ano");
+            session.run("MATCH (r:Race) RETURN r.year AS Year, COUNT(r) AS RaceCount ORDER BY Year;").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# Número de pilotos que correu por cada equipa");
+            session.run("MATCH (d:Driver)-[:DRIVES_FOR]->(c:Constructor) RETURN c.name, count(d)").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# Pilotos que participaram numa corrida num dado ano");
+            session.run("MATCH (d:Driver)-[:RACED_IN]->(r:Race) WHERE r.name = 'British Grand Prix' AND r.year = 2019 RETURN d.name, d.surname").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# Vitórias de um piloto");
+            session.run("MATCH (d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result) WHERE d.name = 'Ayrton' AND d.surname = 'Senna' AND res.position = '1' RETURN r.name AS RaceName, r.year as RaceYear, res.grid AS StartingGrid, res.position AS FinalPosition, res.status AS Status;").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# 10 Pilotos com mais corridas");
+            session.run("MATCH (d:Driver)-[:RACED_IN]->(r:Race) RETURN d.name, d.surname, count(r) AS numRaces ORDER BY numRaces DESC LIMIT 10").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# 5 Circuitos com mais corridas");
+            session.run("MATCH (c:Circuit)<-[:HELD_IN]-(r:Race) RETURN c.name, count(r) AS numRaces ORDER BY numRaces DESC LIMIT 5").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# 5 corridas com menos pilotos a terminar");
+            session.run("MATCH (r:Race)-[:RESULTED_IN]->(res:Result) WHERE res.position <> 'Not Classified' RETURN r.name, r.year, count(res) AS numFinishers ORDER BY numFinishers ASC LIMIT 5").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# Construtores com mais Vitórias");
+            session.run("MATCH (c:Constructor)<-[:DRIVES_FOR]-(d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result) WHERE res.position = '1' RETURN c.name, count(res) AS numWins ORDER BY numWins DESC LIMIT 3").list()
+                .forEach(record -> System.out.println(record.asMap()));
+
+            System.out.println("# Pilotos com mais corridas não terminadas");
+            session.run("MATCH (d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result) WHERE res.status <> 'Finished' RETURN d.name, d.surname, count(r) AS numDNF ORDER BY numDNF DESC LIMIT 10").list()
+                .forEach(record -> System.out.println(record.asMap()));
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         String uri = "bolt://localhost:7687";
         String user = "admin";
@@ -85,6 +129,7 @@ public class Main {
         try {
             main.loadData(filePath);
             System.out.println("Data loaded successfully!");
+            main.executeQueries();
         } finally {
             main.close();
         }
