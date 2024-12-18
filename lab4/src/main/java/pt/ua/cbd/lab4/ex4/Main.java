@@ -32,16 +32,16 @@ public class Main {
             }
 
             String[] data = line.split(";");
-            String race_name = data[0];
-            String date = data[1];
+            String race_name = data[0].replace("\"", "");
+            String date = data[1].replace("\"", "");
             Integer year = Integer.parseInt(data[2]);
-            String circuit = data[3];
-            String surname = data[4];
-            String name = data[5];
-            String constructor = data[6];
+            String circuit = data[3].replace("\"", "");
+            String surname = data[4].replace("\"", "");
+            String name = data[5].replace("\"", "");
+            String constructor = data[6].replace("\"", "");
             Integer grid = Integer.parseInt(data[7]);
             String position = data[8].equals("\\N") ? "Not Classified" : data[8];
-            String status = data[9];
+            String status = data[9].replace("\"", "");
 
             try (Session session = driver.session()) {
                 session.executeWrite(tx -> {

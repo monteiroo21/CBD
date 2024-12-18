@@ -2,16 +2,53 @@
 MATCH (d:Driver)
 RETURN d.name, d.surname
 
+# Número de corridas por ano
+MATCH (r:Race)
+RETURN r.year AS Year, COUNT(r) AS RaceCount
+ORDER BY Year;
+
 # Número de pilotos que correu por cada equipa
 MATCH (d:Driver)-[:DRIVES_FOR]->(c:Constructor)
 RETURN c.name, count(d)
 
 # Pilotos que participaram numa corrida num dado ano
 MATCH (d:Driver)-[:RACED_IN]->(r:Race)
-WHERE replace(r.name, '"', '') = "British Grand Prix" AND r.year = 2019
+WHERE r.name = "British Grand Prix" AND r.year = 2019
 RETURN d.name, d.surname
 
-# Resultados de um piloto
-MATCH (d:Driver)-[:PARTICIPATED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result)
-WHERE replace(d.name, '"', '') = "Ayrton" AND replace(d.surname, '"', '') = "Senna"
-RETURN r.name AS RaceName, res.grid AS StartingGrid, res.position AS FinalPosition, res.status AS Status;
+# Vitórias de um piloto
+MATCH (d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result)
+WHERE d.name = "Ayrton" AND d.surname = "Senna" AND res.position = "1"
+RETURN r.name AS RaceName, r.year as RaceYear, res.grid AS StartingGrid, res.position AS FinalPosition, res.status AS Status;
+
+# 10 Pilotos com mais corridas
+MATCH (d:Driver)-[:RACED_IN]->(r:Race)
+RETURN d.name, d.surname, count(r) AS numRaces
+ORDER BY numRaces DESC
+LIMIT 10
+
+# 5 Circuitos com mais corridas
+MATCH (c:Circuit)<-[:HELD_IN]-(r:Race)
+RETURN c.name, count(r) AS numRaces 
+ORDER BY numRaces DESC
+LIMIT 5
+
+# 5 corridas com menos pilotos a terminar
+MATCH (r:Race)-[:RESULTED_IN]->(res:Result)
+RETURN r.name, r.year, count(res) AS numFinishers
+ORDER BY numFinishers ASC
+LIMIT 5
+
+# Construtores com mais Vitórias
+MATCH (c:Constructor)<-[:DRIVES_FOR]-(d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result)
+WHERE res.position = "1"
+RETURN c.name, count(res) AS numWins
+ORDER BY numWins DESC
+LIMIT 3
+
+# Pilotos com mais corridas não terminadas
+MATCH (d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result)
+WHERE res.status <> "Finished"
+RETURN d.name, d.surname, count(r) AS numDNF
+ORDER BY numDNF DESC
+LIMIT 10
