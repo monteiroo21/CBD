@@ -13,7 +13,7 @@ public class AutoCompleteB {
         Jedis jedis = new Jedis();
         jedis.flushDB();
 
-        File file = new File("/home/joao/Desktop/3ºANO/1ºSEMESTRE/CBD/lab1/src/main/resources/nomes-pt-2021.csv");
+        File file = new File("src/main/resources/nomes-pt-2021.csv");
         Scanner reader = new Scanner(file);
 
         while(reader.hasNextLine()) {

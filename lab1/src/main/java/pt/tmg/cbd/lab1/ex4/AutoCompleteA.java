@@ -9,7 +9,7 @@ public class AutoCompleteA {
     public static void main( String[] args ) throws Exception {
         Jedis jedis = new Jedis();
 
-        File file = new File("/home/joao/Desktop/3ºANO/1ºSEMESTRE/CBD/lab1/src/main/resources/names.txt");
+        File file = new File("src/main/resources/names.txt");
         Scanner reader = new Scanner(file);
 
         while(reader.hasNextLine()) {
