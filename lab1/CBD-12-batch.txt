@@ -21,4 +21,4 @@ GET key1
 HGETALL hash1
 LRANGE list1 0 -1
 SMEMBERS set1
-ZRANGE sortedset1 0 -1 WITHSCORES
+ZRANGE sortedset1 0 -1
