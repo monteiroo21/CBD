@@ -11,11 +11,15 @@ public class AutoCompleteB {
 
     public static void main( String[] args ) throws Exception {
         Jedis jedis = new Jedis();
-        jedis.flushDB();
 
         File file = new File("src/main/resources/nomes-pt-2021.csv");
-        Scanner reader = new Scanner(file);
+        if (!file.exists()) {
+            System.out.println("File not found");
+            jedis.close();
+            return;
+        }
 
+        Scanner reader = new Scanner(file);
         while(reader.hasNextLine()) {
             String[] data = reader.nextLine().split(";");
             jedis.zadd(USERS_SCORE, Double.parseDouble(data[1]), data[0].toLowerCase());
@@ -26,7 +30,7 @@ public class AutoCompleteB {
         while (true) {
             System.out.print("Search for ('Enter' for quit): ");
             name = sc.nextLine().toLowerCase();
-            if (name.equals("")) {
+            if (name.isEmpty()) {
                 break;
             }
 
