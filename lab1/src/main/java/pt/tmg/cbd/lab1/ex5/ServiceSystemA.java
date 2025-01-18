@@ -34,16 +34,18 @@ public class ServiceSystemA {
         while (true) {
             System.out.print("Enter the username ('Enter' to quit): ");
             username = sc.nextLine();
-            username = "USER" + username;
-            if (username.substring(4).equals("")) {
+            if (username.isEmpty()) {
                 break;
             }
+            username = "USER" + username;
+
             System.out.print("Enter the product ('Enter' to quit): ");
             product = sc.nextLine();
-            product = "PRODUCT" + product;
-            if (product.substring(7).equals("")) {
+            if (product.isEmpty()) {
                 break;
             }
+            product = "PRODUCT" + product;
+
             Long timestamp = Long.parseLong(getTime());
             addRequest(username, product, timestamp);
         }
