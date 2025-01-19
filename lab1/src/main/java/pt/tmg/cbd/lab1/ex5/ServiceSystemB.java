@@ -5,7 +5,7 @@ import redis.clients.jedis.Jedis;
 import java.util.Scanner;
 
 public class ServiceSystemB {
-    private static final int QUANTITY = 30;
+    private static final int PRODUCTS = 5;
     private static final int TIMESLOT = 30000;
     private static Jedis jedis;
 
