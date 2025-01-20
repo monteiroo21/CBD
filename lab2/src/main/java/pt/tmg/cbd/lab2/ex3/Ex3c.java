@@ -28,9 +28,11 @@ public class Ex3c {
 
         System.out.println("\n------------------- Ex 7 ------------------\n");
 
-        // db.restaurants.find( { 'grades': { $elemMatch: { 'score': { $gt: 80, $lt: 100 } } } } )
+        // db.restaurants.find( { 'grades': { $elemMatch: { 'score': { $gte: 80, $lte: 100 } } } } )
 
         Bson filter = Filters.elemMatch("grades", Filters.and(Filters.gt("score", 80), Filters.lt("score", 100)));
+
+        Bson filter = new Document("grades", new Document("$elemMatch", new Document("score", new Document("$gte", 80).append("$lte", 100))));
 
         collection.find(filter).forEach(str -> System.out.println(str.toJson()));
 

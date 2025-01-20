@@ -1,13 +1,11 @@
 package pt.tmg.cbd.lab2.ex3;
 
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.Projections;
 
 public class Ex3b {
     public static void main(String[] args) {
@@ -21,28 +19,13 @@ public class Ex3b {
         long startTime = System.currentTimeMillis();
 
         System.out.println("\n---------------- SEARCH LOCALIDADE --------------------\n");
-        Bson projectionFields = Projections.fields(
-        Projections.include("nome", "localidade"),
-        Projections.excludeId());
-
-        collection.find(new Document("localidade", "Queens"))
-            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
+        collection.find(new Document("localidade", "Queens")).forEach(str -> System.out.println(str.toJson()));
 
         System.out.println("\n---------------- SEARCH GASTRONOMIA --------------------\n");
-        projectionFields = Projections.fields(
-        Projections.include("nome", "gastronomia"),
-        Projections.excludeId());
-
-        collection.find(new Document("gastronomia", "American"))
-            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
+        collection.find(new Document("gastronomia", "Portuguese")).forEach(str -> System.out.println(str.toJson()));
 
         System.out.println("\n---------------- SEARCH NOME --------------------\n");
-        projectionFields = Projections.fields(
-        Projections.include("nome"),
-        Projections.excludeId());
-
-        collection.find(new Document("nome", "Subway"))
-            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
+        collection.find(new Document("nome", "Subway")).forEach(str -> System.out.println(str.toJson()));
 
         long endTime = System.currentTimeMillis();
 
@@ -53,32 +36,21 @@ public class Ex3b {
         collection.createIndex(Indexes.ascending("gastronomia"));
         collection.createIndex(Indexes.text("nome"));
 
+        // collection.createIndex(new Document("localidade", 1));
+        // collection.createIndex(new Document("gastronomia", 1));
+        // collection.createIndex(new Document("nome", "text"));
+
+
         startTime = System.currentTimeMillis();
 
         System.out.println("\n---------------- SEARCH LOCALIDADE --------------------\n");
-        projectionFields = Projections.fields(
-        Projections.include("nome", "localidade"),
-        Projections.excludeId());
-
-        collection.find(new Document("localidade", "Queens"))
-            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
+        collection.find(new Document("localidade", "Queens")).forEach(str -> System.out.println(str.toJson()));
 
         System.out.println("\n---------------- SEARCH GASTRONOMIA --------------------\n");
-        projectionFields = Projections.fields(
-        Projections.include("nome", "gastronomia"),
-        Projections.excludeId());
-
-        collection.find(new Document("gastronomia", "American"))
-            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
-
+        collection.find(new Document("gastronomia", "Portuguese")).forEach(str -> System.out.println(str.toJson()));
 
         System.out.println("\n---------------- SEARCH NOME --------------------\n");
-        projectionFields = Projections.fields(
-        Projections.include("nome"),
-        Projections.excludeId());
-
-        collection.find(new Document("nome", "Subway"))
-            .projection(projectionFields).forEach(str -> System.out.println(str.toJson()));
+        collection.find(new Document("nome", "Subway")).forEach(str -> System.out.println(str.toJson()));
 
         endTime = System.currentTimeMillis();
 

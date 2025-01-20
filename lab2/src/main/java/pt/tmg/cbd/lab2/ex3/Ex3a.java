@@ -45,8 +45,8 @@ public class Ex3a {
 
         System.out.println("\n############################################\n");
 
-        Bson updateQuery = new Document("$set", new Document("nome", "New Restaurant"));
-        Bson update = new Document("nome", "New Restaurant 1");
+        Bson updateQuery = new Document("$set", new Document("nome", "New Restaurant 1"));
+        Bson update = new Document("nome", "New Restaurant");
 
         collection.updateOne(update, updateQuery);
 
@@ -55,8 +55,8 @@ public class Ex3a {
 
 
         System.out.println("\n############################################\n");
-        Bson searchFilter = new Document("localidade", "Chicago");
 
+        Bson searchFilter = new Document("localidade", "Chicago");
         collection.find(searchFilter).forEach(doc -> System.out.println(doc.toJson()));
         System.out.println("\n");
 
