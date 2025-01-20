@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex3.d;
+package pt.tmg.cbd.lab2.ex3;
 
 import java.util.Arrays;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex3.d;
+package pt.tmg.cbd.lab2.ex4;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -21,11 +21,11 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 
-public class Ex4b {
-    private static final int products = 30;
+public class Ex4a {
+    private static final int products = 5;
     private static final int timeslot = 30;
 
-    public static void addRequest(String username, String product, Integer quantity, Long timestamp, MongoCollection<Document> collection) {
+    public static void addRequest(String username, String product, Long timestamp, MongoCollection<Document> collection) {
         Bson filter = Filters.eq("user", username);
         Document userDoc = collection.find(filter).first();
         long currentTime = getTime(); // Ensure getTime() returns System.currentTimeMillis()
@@ -34,8 +34,7 @@ public class Ex4b {
             collection.insertOne(new Document("_id", new ObjectId())
                                         .append("user", username)
                                         .append("requests", Arrays.asList(new Document("product", product)
-                                                                                .append("timestamp", timestamp)
-                                                                                .append("quantity", quantity))));
+                                                                                .append("timestamp", timestamp))));
             System.out.println("Product '" + product + "' added for user '" + username + "'.");
         } else {
             // Calculate the threshold timestamp; requests older than this will be removed
@@ -48,19 +47,12 @@ public class Ex4b {
             // Fetch the updated user document
             userDoc = collection.find(filter).first();
             List<Document> requests = userDoc.getList("requests", Document.class);
-            int currentRequestCount = 0;
-            if (requests != null) {
-                for (Document request : requests) {
-                    Integer q = request.getInteger("quantity", 0);
-                    currentRequestCount += q;
-                }
-            }
+            int currentRequestCount = (requests != null) ? requests.size() : 0;
             
-            if (currentRequestCount + quantity <= products) {
+            if (currentRequestCount < products) {
                 // User has not exceeded the maximum number of requests; add the new request
                 collection.updateOne(filter, Updates.push("requests", new Document("product", product)
-                                            .append("timestamp", timestamp)
-                                            .append("quantity", quantity)));
+                                            .append("timestamp", timestamp)));
                 System.out.println("Product '" + product + "' added for user '" + username + "'.");
             } else {
                 // User has reached the maximum number of requests; calculate wait time
@@ -109,10 +101,9 @@ public class Ex4b {
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
 
         MongoDatabase database = mongoClient.getDatabase("cbd");
-        MongoCollection<Document> collection = database.getCollection("ex4b");
+        MongoCollection<Document> collection = database.getCollection("ex4a");
         Scanner sc = new Scanner(System.in);
         String username, product;
-        Integer quantity;
         while (true) {
             System.out.print("Enter the username ('Enter' to quit): ");
             username = sc.nextLine();
@@ -124,14 +115,8 @@ public class Ex4b {
             if (product.equals("")) {
                 break;
             }
-            System.out.print("Enter the quantity ('Enter' to quit): ");
-            String resp = sc.nextLine();
-            if (resp.equals("")) {
-                break;
-            }
-            quantity = Integer.parseInt(resp);
             Long timestamp = getTime();
-            addRequest(username, product, quantity, timestamp, collection);
+            addRequest(username, product, timestamp, collection);
         }
         sc.close();
         mongoClient.close();

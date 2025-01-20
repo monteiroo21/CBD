@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex3.d;
+package pt.tmg.cbd.lab2.ex3;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
