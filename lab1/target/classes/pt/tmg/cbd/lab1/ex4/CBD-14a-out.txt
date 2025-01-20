@@ -1,0 +1,27 @@
+Search for ('Enter' for quit): susann
+susann
+susanna
+susannah
+susanne
+Search for ('Enter' for quit): zora
+zora
+zorah
+zorana
+Search for ('Enter' for quit): poll
+polly
+pollyanna
+Search for ('Enter' for quit): jon 
+jonell
+joni
+jonie
+jonis
+Search for ('Enter' for quit): mat
+matelda
+mathilda
+mathilde
+matilda
+matilde
+matti
+mattie
+matty
+Search for ('Enter' for quit): 
