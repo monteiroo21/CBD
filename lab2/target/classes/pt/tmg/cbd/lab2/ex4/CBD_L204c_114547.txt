@@ -1,3 +1,0 @@
-Redis: Baseia-se em pares chave-valor, ideal para contadores e limites temporais por usuário. Usa estruturas como listas, sets e sorted sets, que são ótimas para manipulação de dados em tempo real com baixo tempo de resposta. O Redis também permite configurações TTL (Time-to-Live), o que ajuda a expirar dados automaticamente após a janela de tempo definida, sem necessidade de operações extras.
-MongoDB: É orientado a documentos e armazena dados em formato BSON (JSON binário), tornando-o mais robusto para registros detalhados e históricos. MongoDB exige operações adicionais para expirar, o que pode ser menos eficiente em cenários de alta frequência de requisições temporais.
-Em suma, Redis é mais adequado para este problema
