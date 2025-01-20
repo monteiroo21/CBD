@@ -1,15 +1,9 @@
 package pt.tmg.cbd.lab2.ex3;
 
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -18,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Ex3d {
     private final MongoCollection<Document> collection;
@@ -27,23 +22,22 @@ public class Ex3d {
     }
 
     public int countLocalidades() {
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-            new Document("$group", new Document("_id", "$localidade")), 
-            new Document("$count", "numLocalidades")));
-
-        return result.first().getInteger("numLocalidades");
+        Bson group = new Document("$group", new Document("_id", "$localidade"));
+        Bson sum = new Document("$count", "numLocalidades");
+        return collection.aggregate(Arrays.asList(group, sum)).first().getInteger("numLocalidades");
     }
 
     public Map<String, Integer> countRestByLocalidade() {
         Map<String, Integer> result = new HashMap<>();
+
+        Bson group = new Document("$group", new Document("_id", "$localidade")
+                                                        .append("totalRestaurants", new Document("$sum", 1)));
+
+        Bson project = new Document("$project", new Document("localidade", "$_id")
+                                                        .append("totalRestaurants", 1)
+                                                        .append("_id", 0));
         
-        collection.aggregate(Arrays.asList(
-                                        Aggregates.group("$localidade", Accumulators.sum("totalRestaurants", 1)),
-                                        Aggregates.project(Projections.fields(
-                                            Projections.computed("localidade", "$_id"),
-                                            Projections.include("totalRestaurants"),
-                                            Projections.excludeId()
-                                        )))).forEach(item -> result.put(item.getString("localidade"), item.getInteger("totalRestaurants")));
+        collection.aggregate(Arrays.asList(group, project)).forEach(item -> result.put(item.getString("localidade"), item.getInteger("totalRestaurants")));
 
         return result;
     }
@@ -51,11 +45,11 @@ public class Ex3d {
     public List<String> getRestWithNameCloserTo(String name) {
         List<String> result = new ArrayList<>();
 
-        Bson filter = Filters.regex("nome", name);
-        collection.find(filter).projection(Projections.fields(
-                                    Projections.include("nome"), 
-                                    Projections.excludeId())
-                                    ).forEach(item -> result.add(String.valueOf(item.get("nome"))));
+        Document regexQuery = new Document();
+        regexQuery.append("$regex", ".*" + Pattern.quote(name) + ".*");
+        Bson filter = new Document("nome", regexQuery);
+        Bson projection = new Document("_id", 0).append("nome", 1);
+        collection.find(filter).projection(projection).forEach(item -> result.add(String.valueOf(item.get("nome"))));
 
         return result;
     }
