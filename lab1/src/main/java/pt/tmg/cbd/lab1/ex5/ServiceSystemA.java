@@ -10,15 +10,16 @@ public class ServiceSystemA {
     private static Jedis jedis;
 
     private static void addProduct(String username, String product) {
-        Integer time = (int) System.currentTimeMillis();
-        Integer cutoffTime = time - TIMESLOT;
+        Long time = System.currentTimeMillis();
+        Long cutoffTime = time - TIMESLOT;
         jedis.zremrangeByScore(username, 0, cutoffTime);
         if (jedis.zcard(username) >= PRODUCTS) {
             System.out.println("ERROR: User " + username.substring(4) + " has exceeded the maximum number of requests in the current timeslot.");
-            Integer timeLeft = (int) (jedis.zrangeWithScores(username, 0, 0).stream()
-                            .mapToDouble(tuple -> tuple.getScore())
-                            .min()
-                            .orElse((double) time) + TIMESLOT - time) / 1000;
+            double earliestTime = jedis.zrangeWithScores(username, 0, 0).stream()
+                    .mapToDouble(tuple -> tuple.getScore())
+                    .min()
+                    .orElse((double) time);
+            double timeLeft = (earliestTime + TIMESLOT - time) / 1000;
             System.out.println("You can make the next request in " + timeLeft + " seconds.");
         } else {
             jedis.zadd(username, time, product);
