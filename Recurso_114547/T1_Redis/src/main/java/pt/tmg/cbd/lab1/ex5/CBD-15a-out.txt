@@ -1,0 +1,67 @@
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): a
+Product 'a' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): b
+Product 'b' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): c
+Product 'c' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): d
+Product 'd' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): e
+Product 'e' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): f
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 17.438 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): f
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 13.417 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): f
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 8.185 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): f
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 3.536 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): f
+Product 'f' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): g
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 2.074 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): g
+Product 'g' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): h
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 1.076 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): h
+Product 'h' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): k
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 1.102 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): k
+Product 'k' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): l
+Product 'l' added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): t
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 19.189 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the product ('Enter' to quit): t
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 10.454 seconds.
+Enter the username ('Enter' to quit): 

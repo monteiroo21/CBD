@@ -1,0 +1,32 @@
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 10
+10 products added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 5
+5 products added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 6
+6 products added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 9
+9 products added for user 'jo'.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 1
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 23.0 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 9
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 15.0 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 9
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 9.0 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 9
+ERROR: User jo has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 3.0 seconds.
+Enter the username ('Enter' to quit): jo
+Enter the quantity ('Enter' to quit): 9
+9 products added for user 'jo'.
+Enter the username ('Enter' to quit):

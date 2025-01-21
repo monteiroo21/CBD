@@ -1,0 +1,17 @@
+ping
+SET this 1
+COPY this that
+GET that
+DECR that
+GET that
+INCR this
+GET this
+SET c "aa"
+GET c
+DEL c
+GET c
+INCRBY c 7
+GET c
+EXISTS a b c
+EXISTS a
+HELLO
