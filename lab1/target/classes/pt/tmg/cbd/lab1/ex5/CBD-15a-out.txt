@@ -1,0 +1,51 @@
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): a
+Product 'a' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): b
+Product 'b' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): c
+Product 'c' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): d
+Product 'd' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): e
+Product 'e' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): f
+ERROR: User joao has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 9 seconds.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): f
+ERROR: User joao has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 3 seconds.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): f
+Product 'f' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): g
+ERROR: User joao has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 2 seconds.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): g
+Product 'g' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): h
+Product 'h' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): r
+ERROR: User joao has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 0 seconds.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): r
+Product 'r' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): t
+Product 't' added for user 'joao'.
+Enter the username ('Enter' to quit): joao
+Enter the product ('Enter' to quit): y
+ERROR: User joao has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 11 seconds.
+Enter the username ('Enter' to quit): 
