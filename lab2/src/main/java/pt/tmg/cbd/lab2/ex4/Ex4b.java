@@ -25,7 +25,6 @@ public class Ex4b {
         Document result = collection.aggregate(Arrays.asList(match, group)).first();
 
         Integer count = (result != null) ? result.getInteger("total") : 0;
-        System.out.println(count);
 
         if ((count + quantity) > QUANTITY) {
             System.out.println("ERROR: User " + username + " has exceeded the maximum number of requests in the current timeslot.");
@@ -45,7 +44,8 @@ public class Ex4b {
     public static void main( String[] args ) {
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
         MongoDatabase database = mongoClient.getDatabase("cbd");
-        collection = database.getCollection("ex4a");
+        collection = database.getCollection("ex4");
+        collection.drop();
 
         Scanner sc = new Scanner(System.in);
         while (true) {

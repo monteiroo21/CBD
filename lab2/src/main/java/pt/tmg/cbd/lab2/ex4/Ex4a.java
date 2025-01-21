@@ -38,7 +38,8 @@ public class Ex4a {
     public static void main( String[] args ) {
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
         MongoDatabase database = mongoClient.getDatabase("cbd");
-        collection = database.getCollection("ex4a");
+        collection = database.getCollection("ex4");
+        collection.drop();
 
         Scanner sc = new Scanner(System.in);
         while (true) {
