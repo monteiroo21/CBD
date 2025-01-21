@@ -109,12 +109,12 @@ public class Main {
             session.run("MATCH (r:Race)-[:RESULTED_IN]->(res:Result) WHERE res.position <> 'Not Classified' RETURN r.name, r.year, count(res) AS numFinishers ORDER BY numFinishers ASC LIMIT 5").list()
                 .forEach(record -> System.out.println(record.asMap()));
 
-            System.out.println("# Construtores com mais Vitórias");
-            session.run("MATCH (c:Constructor)<-[:DRIVES_FOR]-(d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result) WHERE res.position = '1' RETURN c.name, count(res) AS numWins ORDER BY numWins DESC LIMIT 3").list()
+            System.out.println("# Distância mínima entre Senna e Schumacher");
+            session.run("MATCH path = shortestPath((d1:Driver)-[*]-(d2:Driver)) WHERE d1.name = 'Ayrton' AND d1.surname = 'Senna' AND d2.name = 'Michael' AND d2.surname = 'Schumacher' RETURN length(path) AS distance").list()
                 .forEach(record -> System.out.println(record.asMap()));
 
-            System.out.println("# Pilotos com mais corridas não terminadas");
-            session.run("MATCH (d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result) WHERE res.status <> 'Finished' RETURN d.name, d.surname, count(r) AS numDNF ORDER BY numDNF DESC LIMIT 10").list()
+            System.out.println("# Pilotos com mais vitórias em 2015");
+            session.run("MATCH (d:Driver)-[:RACED_IN]->(r:Race)-[:RESULTED_IN]->(res:Result) WHERE res.position = '1' AND r.year = '2015' RETURN d.name, d.surname, count(res) AS numWins ORDER BY numWins DESC").list()
                 .forEach(record -> System.out.println(record.asMap()));
         }
     }
