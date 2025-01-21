@@ -1,0 +1,37 @@
+joao@joao:~/Desktop/3ºANO/1ºSEMESTRE/CBD/lab2$ mvn exec:java -Dexec.mainClass="pt.tmg.cbd.lab2.ex3.d.Ex4a"
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< pt.tmg.cbd:mongo >--------------------------
+[INFO] Building mongo 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec-maven-plugin:3.4.1:java (default-cli) @ mongo ---
+out. 30, 2024 11:13:00 DA MANHÃ com.mongodb.internal.diagnostics.logging.Loggers shouldUseSLF4J
+WARNING: SLF4J not found on the classpath.  Logging is disabled for the 'org.mongodb.driver' component
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): a
+Product 'a' added for user 'mm'.
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): b
+Product 'b' added for user 'mm'.
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): c
+Product 'c' added for user 'mm'.
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): d
+Product 'd' added for user 'mm'.
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): e
+Product 'e' added for user 'mm'.
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): f
+ERROR: User mm has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 17 seconds.
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): f
+ERROR: User mm has exceeded the maximum number of requests in the current timeslot.
+You can make the next request in 4 seconds.
+Enter the username ('Enter' to quit): mm
+Enter the product ('Enter' to quit): f
+Product 'f' added for user 'mm'.
+Enter the username ('Enter' to quit):

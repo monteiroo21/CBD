@@ -14,14 +14,12 @@ public class ServiceSystemB {
         Long cutoffTime = time - TIMESLOT;
         jedis.zremrangeByScore(username, 0, cutoffTime);
 
-        jedis.zrangeByScore(username, cutoffTime, time).forEach(System.out::println);
         Integer total = jedis.zrangeByScore(username, cutoffTime, time).stream()
-                .mapToInt(Integer::parseInt)
+                .map(entry -> Integer.parseInt(entry.split(":")[0]))
+                .mapToInt(Integer::intValue)
                 .sum();
-        System.out.println("Total quantity: " + total);
-        System.out.println("quantity: " + quantity);
-        if ((total + quantity) >= QUANTITY) {
-            System.out.println("NOOOOO");
+
+        if ((total + quantity) > QUANTITY) {
             System.out.println("ERROR: User " + username.substring(4) + " has exceeded the maximum number of requests in the current timeslot.");
             double earliestTime = jedis.zrangeWithScores(username, 0, 0).stream()
                     .mapToDouble(tuple -> tuple.getScore())
@@ -30,8 +28,8 @@ public class ServiceSystemB {
             double timeLeft = (earliestTime + TIMESLOT - time) / 1000;
             System.out.println("You can make the next request in " + timeLeft + " seconds.");
         } else {
-            System.out.println("YESSSS");
-            jedis.zadd(username, time, String.valueOf(quantity));
+            String unique = quantity + ":" + time;
+            jedis.zadd(username, time, unique);
             System.out.println(quantity + " products added for user '" + username.substring(4) + "'.");
         }
     }
